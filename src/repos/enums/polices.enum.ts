@@ -1,4 +1,5 @@
 export enum Policies {
   ADMIN = "ADMIN",
-  USER = "USER"
+  USER = "USER",
+  DEVELOPER = "DEVELOPER"
 }

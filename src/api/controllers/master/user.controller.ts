@@ -9,6 +9,8 @@ import { CreateUserManagerService } from 'src/application/internal-services/mast
 import { CreateUserBaseRequest } from 'src/application/common/models/request/create-user-base.request';
 import { LoginRequest } from 'src/application/internal-services/master/user/services/login/login.request';
 import { LoginService } from 'src/application/internal-services/master/user/services/login/login.service';
+import { RefreshTokenRequest } from 'src/application/internal-services/master/user/services/refresh-token/refresh-token.request';
+import { RefreshTokenService } from 'src/application/internal-services/master/user/services/refresh-token/refresh-token.service';
 
 
 @Controller('users')
@@ -19,7 +21,8 @@ export class UsersController {
     private readonly getPoliciesService: GetPoliciesService,
     private readonly getRulesService: GetRulesService,
     private readonly createUserManagerService: CreateUserManagerService,
-    private readonly loginService: LoginService
+    private readonly loginService: LoginService,
+    private readonly refreshTokenService: RefreshTokenService
   ) { }
 
   @Post("/generate-validator-code")
@@ -54,6 +57,11 @@ export class UsersController {
   @Post("/login")
   async login(@Body() request: LoginRequest) {
     return await this.loginService.execute(request);
+  }
+
+  @Post("/refresh-token")
+  async refreshToken(@Body() request: RefreshTokenRequest) {
+    return await this.refreshTokenService.execute(request);
   }
 
 }

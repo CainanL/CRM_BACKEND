@@ -1,22 +1,26 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { User } from ".prisma/master-client";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class TokenService {
-  private readonly accessTokenExpiration = '15m'; // tempo de expiração do token
-  private readonly refreshTokenExpiration = '7d'; // tempo de expiração do refresh
+  private readonly accessTokenExpiration: string; // tempo de expiração do token
+  private readonly refreshTokenExpiration: string; // tempo de expiração do refresh
 
-  constructor(private readonly jwtService: JwtService) { }
+  constructor(private readonly jwtService: JwtService,
+    private configService: ConfigService
+  ) {
+    const nodeEnv = this.configService.get<string>('NODE_ENV');
+    this.accessTokenExpiration = nodeEnv == 'production' ? '15m' : "365d";
+    this.refreshTokenExpiration = nodeEnv == 'production' ? '7d' : "365d";
+  }
 
   /**
    * Cria um token de acesso.
    * @param payload Payload para o token.
    */
   public generateAccessToken(user: User): string {
-    console.log(
-      { user }
-    )
     const payload = { sub: user.id, id: user.id, email: user.email };
     return this.jwtService.sign(payload, {
       expiresIn: this.accessTokenExpiration,

@@ -14,13 +14,12 @@ declare global {
 
 @Injectable()
 export class TenantMiddleware implements NestMiddleware {
-  constructor(private readonly tenantService: TenantService) {}
+  constructor(private readonly tenantService: TenantService) { }
 
   async use(req: Request, res: Response, next: NextFunction) {
     try {
       // Extrair tenant ID do header (você pode usar subdomain, path, etc.)
       const tenantId = req.headers['x-tenant-id'] as string;
-      
       if (!tenantId) {
         throw new BadRequestException('Tenant ID is required');
       }

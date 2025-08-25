@@ -10,13 +10,20 @@ import { RolesInitializer } from "./initializers/rules.initializer";
 import { RuleModule } from "./internal-services/master/rule/rule.module";
 import { CreateSolutionService } from "./internal-services/client/solution/create-solution/create-solution.service";
 import { QuerySolutionService } from "./internal-services/client/solution/query-solution/query-solution.service";
+import { SolutionModule } from "./internal-services/client/solution/solution.module";
+import { GlobalModule } from "./common/global.module";
+import { DeleteSolutionService } from "./internal-services/client/solution/delete-solution/delete-solution.service";
+import { DeveloperInitializer } from "./initializers/developer.initializer";
 
 @Module({
   imports: [
+    GlobalModule,
     ReposModule,
     UsersModule,
     PolicyModule,
     RuleModule,
+    SolutionModule,
+    
   ],
   providers: [
     EmailService,
@@ -26,14 +33,18 @@ import { QuerySolutionService } from "./internal-services/client/solution/query-
     RolesInitializer,
     CreateSolutionService,
     Logger,
-    QuerySolutionService
+    DeleteSolutionService,
+    DeveloperInitializer
   ],
   exports: [
+    GlobalModule,
     UsersModule,
     PolicyModule,
     RuleModule,
     CreateSolutionService,
-    QuerySolutionService
+    SolutionModule,
+    DeleteSolutionService,
+    DeveloperInitializer
   ],
 })
 export class ApplicationModule { }

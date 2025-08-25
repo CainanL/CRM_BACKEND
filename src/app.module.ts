@@ -6,11 +6,13 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './api/guards/auth.guard';
 import { TokenService } from './application/common/services/token.service';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     ApiModule,
     InfraModule,
+    ConfigModule.forRoot({ isGlobal: true })
   ],
   exports: [InfraModule],
   providers: []

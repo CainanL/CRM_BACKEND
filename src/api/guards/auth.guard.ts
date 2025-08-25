@@ -24,7 +24,16 @@ export class AuthGuard implements CanActivate {
 
         if (!payload?.id) throw new UnauthorizedException('Payload inválido');
 
-        const user = await this.masterClient.user.findFirst({ where: { id: payload.id } });
+        const user = await this.masterClient.user.findFirst({
+            where: { id: payload.id }, include: {
+                UserPolicyRule: {
+                    include: {
+                        policy: true,
+                        rule: true
+                    }
+                },
+            }
+        });
         const tenantId = req.headers['x-tenant-id'];
         if (!user) throw new UnauthorizedException('Usuário não encontrado');
 

@@ -8,14 +8,14 @@ export class QueryBase {
     @Type(() => Number)
     @IsInt()
     @Min(1)
-    page?: number = 1;
+    page: number = 1;
 
     @ApiPropertyOptional({ example: 10, description: "Quantidade de itens por página" })
     @IsOptional()
     @Type(() => Number)
     @IsInt()
     @Min(1)
-    size?: number = 10;
+    size: number = 10;
 
     @ApiPropertyOptional({ example: "", description: "Texto de busca" })
     @IsOptional()

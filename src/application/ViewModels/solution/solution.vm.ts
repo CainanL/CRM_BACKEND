@@ -2,7 +2,7 @@ import { SolutionPriceRangerVm } from "./solution-price-ranger.vm";
 import { Solution, Prisma, SolutionPriceRanger } from ".prisma/tenant-client";
 
 type SolutionProps = Solution & {
-    solutionPriceRanger?: SolutionPriceRanger[];
+    priceRanger?: SolutionPriceRanger[];
 };
 
 export class SolutionVm {
@@ -15,6 +15,6 @@ export class SolutionVm {
         this.id = s.id;
         this.name = s.name;
         this.description = s?.description!;
-        this.ranger = s?.solutionPriceRanger?.map(x => new SolutionPriceRangerVm(x))!;
+        this.ranger = s?.priceRanger?.map(x => new SolutionPriceRangerVm(x))!;
     }
 }

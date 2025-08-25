@@ -26,10 +26,10 @@ model Solution {
 
 model SolutionPriceRanger {
   id                String   @id @default(uuid())
-  title             String
+  title             String   @unique
   description       String?
   price             Decimal? @tenantDb.Decimal(10, 2)
-  ranger            Decimal? @tenantDb.Decimal(10, 2)
+  ranger            Decimal? @unique @tenantDb.Decimal(10, 2)
   unitOfMeasurement String?
 
   solutionId String
@@ -54,8 +54,8 @@ model SolutionFieldSettings {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  solutionId String 
-  solution Solution @relation(fields: [solutionId], references: [id])
+  solutionId String
+  solution   Solution @relation(fields: [solutionId], references: [id])
 
   @@map("solution_field_settings")
 }

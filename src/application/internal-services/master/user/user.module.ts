@@ -10,6 +10,8 @@ import { CreateUserManagerService } from './services/create-user-manager/create-
 import { TokenService } from 'src/application/common/services/token.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginService } from './services/login/login.service';
+import { GetUserTenantsService } from './services/get-users/get-user-tenants.service';
+import { RefreshTokenService } from './services/refresh-token/refresh-token.service';
 
 @Module({
   imports: [ReposModule],
@@ -22,7 +24,9 @@ import { LoginService } from './services/login/login.service';
     CreateUserManagerService,
     TokenService,
     JwtService,
-    LoginService
+    LoginService,
+    GetUserTenantsService,
+    RefreshTokenService
   ], 
   exports: [
     UsersService,
@@ -31,7 +35,9 @@ import { LoginService } from './services/login/login.service';
     CreateUserManagerService,
     TokenService,
     JwtService,
-    LoginService
+    LoginService,
+    GetUserTenantsService,
+    RefreshTokenService
   ]
 })
 export class UsersModule { }
