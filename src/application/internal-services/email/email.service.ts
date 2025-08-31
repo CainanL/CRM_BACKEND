@@ -20,11 +20,13 @@ export class EmailService {
         const config: EmailConfig = {
             host: this.configService.get<string>('SMTP_HOST')!,
             port: this.configService.get<number>('SMTP_PORT')!,
-            secure: this.configService.get<boolean>('SMTP_SECURE')!,
+            secure: this.configService.get<string>('SMTP_SECURE')! == "false" ? false : true,
             user: this.configService.get<string>('SMTP_USER')!,
             pass: this.configService.get<string>('SMTP_PASS')!,
             from: this.configService.get<string>('SMTP_FROM')!,
         };
+        this.validateConfig(config);
+        this.logger.debug(JSON.stringify(config))
 
         this.transporter = nodemailer.createTransport({
             host: config.host,
@@ -37,13 +39,32 @@ export class EmailService {
         });
 
         // Verificar conexão
-        this.transporter.verify((error, success) => {
-            if (error) {
-                this.logger.error('Erro na configuração do email:', error);
-            } else {
-                this.logger.log('Servidor de email configurado com sucesso');
+        this.verifyConnection();
+        // this.transporter.verify((error, success) => {
+        //     if (error) {
+        //         this.logger.error('Erro na configuração do email:', error);
+        //     } else {
+        //         this.logger.log('Servidor de email configurado com sucesso');
+        //     }
+        // });
+    }
+
+    private async verifyConnection(): Promise<void> {
+        try {
+            await this.transporter.verify();
+            this.logger.log('✅ Servidor de email configurado com sucesso');
+        } catch (error) {
+            this.logger.error('❌ Erro na configuração do email:', error.message);
+            
+            // Sugestões baseadas no tipo de erro
+            if (error.code === 'ETIMEDOUT') {
+                this.logger.error('💡 Dica: Verifique se a porta e SSL estão corretos:');
+                this.logger.error('   - Porta 465: use SMTP_SECURE=true');
+                this.logger.error('   - Porta 587: use SMTP_SECURE=false');
             }
-        });
+            
+            throw error;
+        }
     }
 
     async sendEmail(options: EmailOptions): Promise<boolean> {
@@ -134,5 +155,28 @@ export class EmailService {
             html: message,
             attachments,
         });
+    }
+
+    private validateConfig(config: EmailConfig): void {
+        if (!config.host) {
+            throw new Error('SMTP_HOST é obrigatório');
+        }
+        if (!config.port) {
+            throw new Error('SMTP_PORT é obrigatório');
+        }
+        if (!config.user) {
+            throw new Error('SMTP_USER é obrigatório');
+        }
+        if (!config.pass) {
+            throw new Error('SMTP_PASS é obrigatório');
+        }
+
+        // Validar combinação porta/secure
+        if (config.port === 465 && !config.secure) {
+            this.logger.warn('⚠️  Porta 465 geralmente requer SMTP_SECURE=true');
+        }
+        if (config.port === 587 && config.secure) {
+            this.logger.warn('⚠️  Porta 587 geralmente usa SMTP_SECURE=false (STARTTLS)');
+        }
     }
 }

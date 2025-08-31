@@ -5,10 +5,14 @@ import { AuthGuard } from "src/api/guards/auth.guard";
 import { PoliciesRolesGuard } from "src/api/guards/policies-roles.guard";
 import { AddSolutionPriceRequest } from "src/application/internal-services/client/solution/add-solution-price/add-solution-price.request";
 import { AddSolutionPriceService } from "src/application/internal-services/client/solution/add-solution-price/add-solution-price.service";
+import { CreateSolutionFieldSettingsRequest } from "src/application/internal-services/client/solution/create-solution-field-settings/create-solution-field-settings.request";
+import { CreateSolutionFieldSettingsService } from "src/application/internal-services/client/solution/create-solution-field-settings/create-solution-field-settings.service";
 import { CreateSolutionRequest } from "src/application/internal-services/client/solution/create-solution/create-solution.request";
 import { CreateSolutionService } from "src/application/internal-services/client/solution/create-solution/create-solution.service";
 import { DeleteSolutionRequest } from "src/application/internal-services/client/solution/delete-solution/delete-solution.request";
 import { DeleteSolutionService } from "src/application/internal-services/client/solution/delete-solution/delete-solution.service";
+import { GetSolutionByIdRequest } from "src/application/internal-services/client/solution/get-solution-by-id/get-solution-by-id.request";
+import { GetSolutionByIdService } from "src/application/internal-services/client/solution/get-solution-by-id/get-solution-by-id.service";
 import { QuerySolutionRequest } from "src/application/internal-services/client/solution/query-solution/query-solution.request";
 import { QuerySolutionService } from "src/application/internal-services/client/solution/query-solution/query-solution.service";
 import { RemoveSolutionPriceRequest } from "src/application/internal-services/client/solution/remove-solution-price/remove-solution-price.request";
@@ -26,7 +30,9 @@ export class SolutionController {
         private readonly addSolutionPriceService: AddSolutionPriceService,
         private readonly updateSolutionService: UpdateSolutionService,
         private readonly deleteSolutionService: DeleteSolutionService,
-        private readonly removeSolutionPriceService: RemoveSolutionPriceService
+        private readonly removeSolutionPriceService: RemoveSolutionPriceService,
+        private readonly createSolutionFieldSettingsService: CreateSolutionFieldSettingsService,
+        private readonly getSolutionByIdService: GetSolutionByIdService
     ) { }
 
     @Post()
@@ -69,6 +75,17 @@ export class SolutionController {
         return await this.deleteSolutionService.execute(body, req);
     }
 
+    @Post("/solution-field-settings")
+    @PolicyRole([Policies.ADMIN], [Rules.CAN_CREATE])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async createSolutionFieldSettings(@Body() body: CreateSolutionFieldSettingsRequest, @Request() req) {
+        return await this.createSolutionFieldSettingsService.execute(body, req);
+    }
 
-
+    @Get("/solution/:id")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_VIEW])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async getSolutionById(@Param() param: GetSolutionByIdRequest, @Request() req) {
+        return await this.getSolutionByIdService.execute(param, req);
+    }
 }

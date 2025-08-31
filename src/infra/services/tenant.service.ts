@@ -1,9 +1,8 @@
-import { HttpException, HttpStatus, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient as MasterClient } from '.prisma/master-client';
 import { Prisma, PrismaClient as TenantClient } from '.prisma/tenant-client';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PrismaClientInitializationError } from '@prisma/client/runtime/library';
 import { BaseException } from 'src/application/common/exceptions/base-exception';
 

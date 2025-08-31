@@ -8,12 +8,13 @@ datasource tenantDb {
   url      = env("TENANT_DATABASE_URL")
 }
 
+// Solução, nome da atividade. Ex: Projeto Elétrico, energia solar, desenvolvimento de software.
 model Solution {
-  id          String                    @id @default(uuid())
-  name        String                    @unique
+  id          String                     @id @default(uuid())
+  name        String                     @unique
   description String?
   priceRanger SolutionPriceRanger[]
-  documents   SolutionDocumentCapture[]
+  documents   SolutionCapturedDocument[]
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -24,6 +25,7 @@ model Solution {
   @@map("solutions")
 }
 
+// valor cobrado por determinado ranger. Ex: R$ 600 por KWp, R$ 120 por hora.
 model SolutionPriceRanger {
   id                String   @id @default(uuid())
   title             String   @unique
@@ -42,13 +44,14 @@ model SolutionPriceRanger {
   @@map("solution_price_rangers")
 }
 
+// Parâmetros para criação do input. Ex: dataType: CPF, formatType: string, mask: 999.999.999-99, title: CPF, placeholder: CPF
 model SolutionFieldSettings {
   id          String  @id @default(uuid())
   dataType    String
   formatType  String
   mask        String?
-  title       String
-  placeholder String?
+  title       String  
+  placeholder String
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -57,9 +60,13 @@ model SolutionFieldSettings {
   solutionId String
   solution   Solution @relation(fields: [solutionId], references: [id])
 
+  SolutionFieldValue SolutionFieldValue[]
+
+
   @@map("solution_field_settings")
 }
 
+// Valor do input. Ex: CPF, valor = 000.000.000-00
 model SolutionFieldValue {
   id    String  @id @default(uuid())
   value String?
@@ -68,23 +75,27 @@ model SolutionFieldValue {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  documentsCapture SolutionDocumentCapture[]
+  documentId String
+  document   SolutionCapturedDocument @relation(fields: [documentId], references: [id])
+
+  settingsId String
+  settings SolutionFieldSettings @relation(fields: [settingsId], references: [id])
 
   @@map("solution_field_values")
 }
 
-model SolutionDocumentCapture {
+// Contem o agrupamento de inputs de cada solution juntando os dados de input e vinculando a informação ao lead que está sendo criado aqui.
+model SolutionCapturedDocument {
   id String @id @default(uuid())
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fielValueId String
-  fielValue   SolutionFieldValue @relation(fields: [fielValueId], references: [id])
+  fielValues SolutionFieldValue[]
 
   solutionId String
   solution   Solution @relation(fields: [solutionId], references: [id])
 
-  @@map("solution_document_captures")
+  @@map("solution_captured_documents")
 }

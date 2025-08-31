@@ -9,11 +9,11 @@ import { PoliciesInitializer } from "./initializers/policies.initializer";
 import { RolesInitializer } from "./initializers/rules.initializer";
 import { RuleModule } from "./internal-services/master/rule/rule.module";
 import { CreateSolutionService } from "./internal-services/client/solution/create-solution/create-solution.service";
-import { QuerySolutionService } from "./internal-services/client/solution/query-solution/query-solution.service";
 import { SolutionModule } from "./internal-services/client/solution/solution.module";
 import { GlobalModule } from "./common/global.module";
 import { DeleteSolutionService } from "./internal-services/client/solution/delete-solution/delete-solution.service";
 import { DeveloperInitializer } from "./initializers/developer.initializer";
+import { CreateSolutionFieldSettingsService } from "./internal-services/client/solution/create-solution-field-settings/create-solution-field-settings.service";
 
 @Module({
   imports: [
@@ -31,20 +31,16 @@ import { DeveloperInitializer } from "./initializers/developer.initializer";
     GetPoliciesService,
     PoliciesInitializer,
     RolesInitializer,
-    CreateSolutionService,
     Logger,
-    DeleteSolutionService,
-    DeveloperInitializer
+    DeveloperInitializer,
   ],
   exports: [
     GlobalModule,
     UsersModule,
     PolicyModule,
     RuleModule,
-    CreateSolutionService,
     SolutionModule,
-    DeleteSolutionService,
-    DeveloperInitializer
+    DeveloperInitializer,
   ],
 })
 export class ApplicationModule { }
