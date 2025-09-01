@@ -8,6 +8,10 @@ import { EmailController } from "./controllers/master/email.controller";
 import { EmployeeController } from "./controllers/client/employee.controller";
 import { ClientController } from "./controllers/client/client.controller";
 import { ClientInteractionController } from "./controllers/client-interaction/client-interaction.controller";
+import { PipelineGroupController } from "./controllers/pipeline/pipeline-group.controller";
+import { PipelineController } from "./controllers/pipeline/pipeline.controller";
+import { PipelineStageController } from "./controllers/pipeline/pipeline-stage.controller";
+import { OpportunityController } from "./controllers/pipeline/opportunity.controller";
 
 @Module({
     imports: [
@@ -24,6 +28,10 @@ import { ClientInteractionController } from "./controllers/client-interaction/cl
     EmployeeController,
     ClientController,
     ClientInteractionController,
+    PipelineGroupController,
+    PipelineController,
+    PipelineStageController,
+    OpportunityController,
   ]
 })
 export class ApiModule { }

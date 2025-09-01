@@ -10,8 +10,8 @@ datasource tenantDb {
 
 // Solução, nome da atividade. Ex: Projeto Elétrico, energia solar, desenvolvimento de software.
 model Solution {
-  id          String                     @id @default(uuid())
-  name        String                     @unique
+  id          String                 @id @default(uuid())
+  name        String                 @unique
   description String?
   priceRanger SolutionPriceRanger[]
   documents   SolutionCapturedLead[]
@@ -28,10 +28,10 @@ model Solution {
 // valor cobrado por determinado ranger. Ex: R$ 600 por KWp, R$ 120 por hora.
 model SolutionPriceRanger {
   id                String   @id @default(uuid())
-  title             String   
+  title             String
   description       String?
   price             Decimal? @tenantDb.Decimal(10, 2)
-  ranger            Decimal?  @tenantDb.Decimal(10, 2)
+  ranger            Decimal? @tenantDb.Decimal(10, 2)
   unitOfMeasurement String?
 
   solutionId String
@@ -47,13 +47,13 @@ model SolutionPriceRanger {
 // Parâmetros para criação do input. Ex: dataType: CPF, formatType: string, mask: 999.999.999-99, title: CPF, placeholder: CPF
 model SolutionFieldSettings {
   id          String  @id @default(uuid())
-  dataType    String                    // Tipo de dado (text, email, phone, number, date, etc.)
-  formatType  String                    // Formato específico (cpf, cnpj, phone, etc.)
-  mask        String?                   // Máscara para formatação
-  title       String                    // Título do campo
-  placeholder String                    // Placeholder do input
-  isRequired  Boolean                   @default(false)  // Campo obrigatório
-  order       Int                       @default(0)      // Ordem de exibição
+  dataType    String // Tipo de dado (text, email, phone, number, date, etc.)
+  formatType  String // Formato específico (cpf, cnpj, phone, etc.)
+  mask        String? // Máscara para formatação
+  title       String // Título do campo
+  placeholder String // Placeholder do input
+  isRequired  Boolean @default(false) // Campo obrigatório
+  order       Int     @default(0) // Ordem de exibição
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -81,7 +81,7 @@ model SolutionFieldValue {
   document   SolutionCapturedLead @relation(fields: [documentId], references: [id])
 
   settingsId String
-  settings SolutionFieldSettings @relation(fields: [settingsId], references: [id])
+  settings   SolutionFieldSettings @relation(fields: [settingsId], references: [id])
 
   @@map("solution_field_values")
 }
@@ -92,176 +92,281 @@ model SolutionCapturedLead {
   id String @id @default(uuid())
 
   // Status do lead (opcional, pode ser configurado pelo usuário)
-  status      String?                   @default("NEW")
-  
+  status String? @default("NEW")
+
   // Campos padrão do sistema
-  isActive    Boolean                   @default(true)
-  createdAt   DateTime                  @default(now())
-  updatedAt   DateTime                  @updatedAt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relacionamentos
-  fielValues  SolutionFieldValue[]
-  solutionId  String
-  solution    Solution @relation(fields: [solutionId], references: [id])
+  fielValues SolutionFieldValue[]
+  solutionId String
+  solution   Solution             @relation(fields: [solutionId], references: [id])
 
   @@map("solution_captured_leads")
 }
 
 // Endereço do funcionário
 model EmployeeAddress {
-  id          String   @id @default(uuid())
-  street      String   // Nome da rua
-  number      String   // Número da residência
-  complement String?   // Complemento (opcional)
-  district   String   // Bairro
-  city       String   // Cidade
-  state      String   // Estado
-  cep        String   // CEP
-  
+  id         String  @id @default(uuid())
+  street     String // Nome da rua
+  number     String // Número da residência
+  complement String? // Complemento (opcional)
+  district   String // Bairro
+  city       String // Cidade
+  state      String // Estado
+  cep        String // CEP
+
   // Relacionamento com Employee (1:1)
   employeeId String   @unique
   employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  
+
   // Campos padrão do sistema
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("employee_addresses")
 }
 
 // Endereço do cliente
 model ClientAddress {
-  id          String   @id @default(uuid())
-  street      String   // Nome da rua
-  number      String   // Número da residência
-  complement String?   // Complemento (opcional)
-  district   String   // Bairro
-  city       String   // Cidade
-  state      String   // Estado
-  cep        String   // CEP
-  
+  id         String  @id @default(uuid())
+  street     String // Nome da rua
+  number     String // Número da residência
+  complement String? // Complemento (opcional)
+  district   String // Bairro
+  city       String // Cidade
+  state      String // Estado
+  cep        String // CEP
+
   // Relacionamento com Client (1:1)
-  clientId String   @unique
+  clientId String @unique
   client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  
+
   // Campos padrão do sistema
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("client_addresses")
 }
 
 // Funcionário da empresa
 model Employee {
-  id                  String         @id @default(uuid())
-  fullName            String         // Nome completo do funcionário
-  photo               String?        // URL da foto (opcional)
-  cpf                 String?         @unique // CPF único
-  birthDate           DateTime?       // Data de nascimento
-  sex                 String         // Sexo (MALE, FEMALE, OTHER)
-  email               String         @unique // Email único
-  phone               String?        // Telefone (opcional)
-  
+  id        String    @id @default(uuid())
+  fullName  String // Nome completo do funcionário
+  photo     String? // URL da foto (opcional)
+  cpf       String?   @unique // CPF único
+  birthDate DateTime? // Data de nascimento
+  sex       String // Sexo (MALE, FEMALE, OTHER)
+  email     String    @unique // Email único
+  phone     String? // Telefone (opcional)
+
   // Relacionamento com endereço (1:1)
-  address             EmployeeAddress?
-  
+  address EmployeeAddress?
+
   // Relacionamento com interações de clientes (1:N)
-  clientInteractions  ClientInteraction[]
-  
-  function            String?         // Cargo/função
-  department          String?         // Departamento
-  internalRegistration String        @unique // Registro interno único
-  admissionDate       DateTime       // Data de admissão
-  typeOfContract      String?         // Tipo de contrato (CLT, PJ, TEMPORARY, INTERNSHIP, TRAINEE)
-  salary              Decimal?        @tenantDb.Decimal(10, 2) // Salário base
-  comission           Decimal?       @tenantDb.Decimal(10, 2) // Comissão (opcional)
-  status              String         // Status (ACTIVE, INACTIVE, VACATION, ON_LEAVE, TERMINATED)
-  userId              String?        // Referência ao usuário para autenticação (opcional)
-  
+  clientInteractions ClientInteraction[]
+
+  // Relacionamento com oportunidades atribuídas (1:N)
+  assignedOpportunities Opportunity[]
+
+  function             String? // Cargo/função
+  department           String? // Departamento
+  internalRegistration String   @unique // Registro interno único
+  admissionDate        DateTime // Data de admissão
+  typeOfContract       String? // Tipo de contrato (CLT, PJ, TEMPORARY, INTERNSHIP, TRAINEE)
+  salary               Decimal? @tenantDb.Decimal(10, 2) // Salário base
+  comission            Decimal? @tenantDb.Decimal(10, 2) // Comissão (opcional)
+  status               String // Status (ACTIVE, INACTIVE, VACATION, ON_LEAVE, TERMINATED)
+  userId               String? // Referência ao usuário para autenticação (opcional)
+
   // Campos padrão do sistema
-  isActive            Boolean        @default(true)
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("employees")
 }
 
 // Cliente da empresa
 model Client {
-  id                  String         @id @default(uuid())
-  clientType          String         // Tipo de cliente (INDIVIDUAL, CORPORATE)
-  
+  id         String @id @default(uuid())
+  clientType String // Tipo de cliente (INDIVIDUAL, CORPORATE)
+
   // Campos para pessoa física
-  fullName            String?        // Nome completo (para pessoa física)
-  cpf                 String?        @unique // CPF único (para pessoa física)
-  birthDate           DateTime?      // Data de nascimento (para pessoa física)
-  sex                 String?        // Sexo (MALE, FEMALE, OTHER) - para pessoa física
-  
+  fullName  String? // Nome completo (para pessoa física)
+  cpf       String?   @unique // CPF único (para pessoa física)
+  birthDate DateTime? // Data de nascimento (para pessoa física)
+  sex       String? // Sexo (MALE, FEMALE, OTHER) - para pessoa física
+
   // Campos para pessoa jurídica
-  companyName         String?        // Razão social (para pessoa jurídica)
-  tradeName           String?        // Nome fantasia (para pessoa jurídica)
-  cnpj                String?        @unique // CNPJ único (para pessoa jurídica)
-  stateRegistration   String?        // Inscrição estadual (para pessoa jurídica)
-  municipalRegistration String?      // Inscrição municipal (para pessoa jurídica)
-  
+  companyName           String? // Razão social (para pessoa jurídica)
+  tradeName             String? // Nome fantasia (para pessoa jurídica)
+  cnpj                  String? @unique // CNPJ único (para pessoa jurídica)
+  stateRegistration     String? // Inscrição estadual (para pessoa jurídica)
+  municipalRegistration String? // Inscrição municipal (para pessoa jurídica)
+
   // Campos comuns
-  photo               String?        // URL da foto (opcional)
-  email               String         @unique // Email único
-  phone               String?        // Telefone (opcional)
-  alternativePhone    String?        // Telefone alternativo (opcional)
-  
+  photo            String? // URL da foto (opcional)
+  email            String  @unique // Email único
+  phone            String? // Telefone (opcional)
+  alternativePhone String? // Telefone alternativo (opcional)
+
   // Relacionamento com endereço (1:1)
-  address             ClientAddress?
-  
+  address ClientAddress?
+
   // Relacionamento com interações (1:N)
-  interactions        ClientInteraction[]
-  
+  interactions ClientInteraction[]
+
+  // Relacionamento com oportunidades (1:N)
+  opportunities Opportunity[]
+
   // Campos de negócio
-  internalCode        String         @unique // Código interno único
-  status              String         // Status (ACTIVE, INACTIVE, PENDING, BLOCKED)
-  notes               String?        // Observações sobre o cliente
-  
+  internalCode String  @unique // Código interno único
+  status       String // Status (ACTIVE, INACTIVE, PENDING, BLOCKED)
+  notes        String? // Observações sobre o cliente
+
   // Campos padrão do sistema
-  isActive            Boolean        @default(true)
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("clients")
 }
 
 // Histórico de interações com clientes
 model ClientInteraction {
-  id                  String         @id @default(uuid())
-  
+  id String @id @default(uuid())
+
   // Relacionamentos
-  clientId            String         // ID do cliente
-  client              Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  
-  employeeId          String?        // ID do funcionário que realizou a interação (opcional)
-  employee            Employee?      @relation(fields: [employeeId], references: [id])
-  
+  clientId String // ID do cliente
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  employeeId String? // ID do funcionário que realizou a interação (opcional)
+  employee   Employee? @relation(fields: [employeeId], references: [id])
+
   // Dados da interação
-  interactionType     String         // Tipo de interação (EMAIL, PHONE_CALL, MEETING, etc.)
-  interactionDate     DateTime       // Data e hora da interação
-  description         String         // Descrição detalhada da interação
-  status              String         // Status da interação (SUCCESS, PENDING, etc.)
-  result              String         // Resultado da interação
-  
+  interactionType String // Tipo de interação (EMAIL, PHONE_CALL, MEETING, etc.)
+  interactionDate DateTime // Data e hora da interação
+  description     String // Descrição detalhada da interação
+  status          String // Status da interação (SUCCESS, PENDING, etc.)
+  result          String // Resultado da interação
+
   // Tags para categorização (armazenado como JSON)
-  tags                String[]       // Array de tags (SALES, SUPPORT, etc.)
-  
+  tags String[] // Array de tags (SALES, SUPPORT, etc.)
+
   // Campos adicionais
-  duration            Int?           // Duração em minutos (para chamadas, reuniões)
-  followUpDate        DateTime?      // Data para follow-up
-  priority            String?        // Prioridade (LOW, MEDIUM, HIGH, URGENT)
-  cost                Decimal?       @tenantDb.Decimal(10, 2) // Custo da interação
-  
+  duration     Int? // Duração em minutos (para chamadas, reuniões)
+  followUpDate DateTime? // Data para follow-up
+  priority     String? // Prioridade (LOW, MEDIUM, HIGH, URGENT)
+  cost         Decimal?  @tenantDb.Decimal(10, 2) // Custo da interação
+
   // Campos padrão do sistema
-  isActive            Boolean        @default(true)
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("client_interactions")
+}
+
+// Agrupamento de funis de vendas (ex: Energia Solar, Engenharia, Pizzaria)
+model PipelineGroup {
+  id          String  @id @default(uuid())
+  name        String // Nome do agrupamento
+  description String? // Descrição do agrupamento
+
+  // Relacionamentos
+  pipelines Pipeline[] // Funis dentro deste agrupamento
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("pipeline_groups")
+}
+
+// Funil de vendas
+model Pipeline {
+  id          String  @id @default(uuid())
+  name        String // Nome do funil
+  description String? // Descrição do funil
+
+  // Relacionamentos
+  groupId String // ID do agrupamento
+  group   PipelineGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  createdBy     String // ID do usuário criador
+  stages        PipelineStage[] // Estágios do funil
+  opportunities Opportunity[] // Oportunidades no funil
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Índice único para garantir nome único por agrupamento
+  @@unique([groupId, name])
+  @@map("pipelines")
+}
+
+// Estágio do funil de vendas
+model PipelineStage {
+  id                 String @id @default(uuid())
+  name               String // Nome do estágio
+  position           Int // Posição no funil (1, 2, 3, etc.)
+  defaultProbability Int // Probabilidade padrão (0-100)
+  color              String // Cor em hexadecimal (ex: #FF5733)
+
+  // Relacionamentos
+  pipelineId    String // ID do funil
+  pipeline      Pipeline      @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  opportunities Opportunity[] // Op/*  */ortunidades neste estágio
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Índice único para garantir posição única por funil
+  @@unique([pipelineId, position])
+  @@map("pipeline_stages")
+}
+
+// Oportunidade de vendas
+model Opportunity {
+  id                String    @id @default(uuid())
+  name              String // Nome da oportunidade
+  description       String? // Descrição da oportunidade
+  value             Decimal?  @tenantDb.Decimal(10, 2) // Valor da oportunidade
+  probability       Int? // Probabilidade atual (0-100)
+  expectedCloseDate DateTime? // Data esperada de fechamento
+
+  // Relacionamentos
+  clientId String // ID do cliente
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  pipelineId String // ID do funil
+  pipeline   Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+
+  stageId String // ID do estágio atual
+  stage   PipelineStage @relation(fields: [stageId], references: [id])
+
+  assignedTo       String? // ID do funcionário responsável
+  assignedEmployee Employee? @relation(fields: [assignedTo], references: [id])
+
+  // Status da oportunidade
+  status       String    @default("OPEN") // OPEN, WON, LOST, CANCELLED, etc.
+  closedAt     DateTime? // Data de fechamento
+  closedReason String? // Motivo do fechamento
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("opportunities")
 }

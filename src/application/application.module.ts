@@ -18,6 +18,7 @@ import { EmailModule } from "./internal-services/email/email.module";
 import { EmployeeModule } from "./internal-services/employee/employee.module";
 import { ClientModule } from "./internal-services/client/client.module";
 import { ClientInteractionModule } from "./internal-services/client-interaction/client-interaction.module";
+import { PipelineModule } from "./internal-services/pipeline/pipeline.module";
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { ClientInteractionModule } from "./internal-services/client-interaction/
     EmailModule,
     EmployeeModule,
     ClientModule,
-    ClientInteractionModule
+    ClientInteractionModule,
+    PipelineModule
   ],
   providers: [
     // EmailService,
@@ -51,7 +53,8 @@ import { ClientInteractionModule } from "./internal-services/client-interaction/
     EmailModule,
     EmployeeModule,
     ClientModule,
-    ClientInteractionModule
+    ClientInteractionModule,
+    PipelineModule
   ],
 })
 export class ApplicationModule { }
