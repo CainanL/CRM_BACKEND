@@ -8,21 +8,21 @@ import { UserPolicyRuleRepository } from "./user-policy-rule/user-policy-rule.re
 
 @Module({
     imports: [InfraModule],
-    providers: [
-        EmailValidatorCodeRepository,
-        PolicyRepository,
-        RuleRepository,
-        UserRepository,
-        UserPolicyRuleRepository,
-    ],
-    exports: [
-        InfraModule,
-        EmailValidatorCodeRepository,
-        PolicyRepository,
-        RuleRepository,
-        UserRepository,
-        UserPolicyRuleRepository,
-    ]
+      providers: [
+    EmailValidatorCodeRepository,
+    PolicyRepository,
+    RuleRepository,
+    UserRepository,
+    UserPolicyRuleRepository,
+  ],
+      exports: [
+    InfraModule,
+    EmailValidatorCodeRepository,
+    PolicyRepository,
+    RuleRepository,
+    UserRepository,
+    UserPolicyRuleRepository,
+  ]
 
 })
 export class ReposModule { }

@@ -130,13 +130,36 @@ model EmployeeAddress {
   @@map("employee_addresses")
 }
 
+// Endereço do cliente
+model ClientAddress {
+  id          String   @id @default(uuid())
+  street      String   // Nome da rua
+  number      String   // Número da residência
+  complement String?   // Complemento (opcional)
+  district   String   // Bairro
+  city       String   // Cidade
+  state      String   // Estado
+  cep        String   // CEP
+  
+  // Relacionamento com Client (1:1)
+  clientId String   @unique
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  // Campos padrão do sistema
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("client_addresses")
+}
+
 // Funcionário da empresa
 model Employee {
   id                  String         @id @default(uuid())
   fullName            String         // Nome completo do funcionário
   photo               String?        // URL da foto (opcional)
-  cpf                 String         @unique // CPF único
-  birthDate           DateTime       // Data de nascimento
+  cpf                 String?         @unique // CPF único
+  birthDate           DateTime?       // Data de nascimento
   sex                 String         // Sexo (MALE, FEMALE, OTHER)
   email               String         @unique // Email único
   phone               String?        // Telefone (opcional)
@@ -144,12 +167,15 @@ model Employee {
   // Relacionamento com endereço (1:1)
   address             EmployeeAddress?
   
-  function            String         // Cargo/função
-  department          String         // Departamento
+  // Relacionamento com interações de clientes (1:N)
+  clientInteractions  ClientInteraction[]
+  
+  function            String?         // Cargo/função
+  department          String?         // Departamento
   internalRegistration String        @unique // Registro interno único
   admissionDate       DateTime       // Data de admissão
-  typeOfContract      String         // Tipo de contrato (CLT, PJ, TEMPORARY, INTERNSHIP, TRAINEE)
-  salary              Decimal        @tenantDb.Decimal(10, 2) // Salário base
+  typeOfContract      String?         // Tipo de contrato (CLT, PJ, TEMPORARY, INTERNSHIP, TRAINEE)
+  salary              Decimal?        @tenantDb.Decimal(10, 2) // Salário base
   comission           Decimal?       @tenantDb.Decimal(10, 2) // Comissão (opcional)
   status              String         // Status (ACTIVE, INACTIVE, VACATION, ON_LEAVE, TERMINATED)
   userId              String?        // Referência ao usuário para autenticação (opcional)
@@ -160,4 +186,82 @@ model Employee {
   updatedAt           DateTime       @updatedAt
 
   @@map("employees")
+}
+
+// Cliente da empresa
+model Client {
+  id                  String         @id @default(uuid())
+  clientType          String         // Tipo de cliente (INDIVIDUAL, CORPORATE)
+  
+  // Campos para pessoa física
+  fullName            String?        // Nome completo (para pessoa física)
+  cpf                 String?        @unique // CPF único (para pessoa física)
+  birthDate           DateTime?      // Data de nascimento (para pessoa física)
+  sex                 String?        // Sexo (MALE, FEMALE, OTHER) - para pessoa física
+  
+  // Campos para pessoa jurídica
+  companyName         String?        // Razão social (para pessoa jurídica)
+  tradeName           String?        // Nome fantasia (para pessoa jurídica)
+  cnpj                String?        @unique // CNPJ único (para pessoa jurídica)
+  stateRegistration   String?        // Inscrição estadual (para pessoa jurídica)
+  municipalRegistration String?      // Inscrição municipal (para pessoa jurídica)
+  
+  // Campos comuns
+  photo               String?        // URL da foto (opcional)
+  email               String         @unique // Email único
+  phone               String?        // Telefone (opcional)
+  alternativePhone    String?        // Telefone alternativo (opcional)
+  
+  // Relacionamento com endereço (1:1)
+  address             ClientAddress?
+  
+  // Relacionamento com interações (1:N)
+  interactions        ClientInteraction[]
+  
+  // Campos de negócio
+  internalCode        String         @unique // Código interno único
+  status              String         // Status (ACTIVE, INACTIVE, PENDING, BLOCKED)
+  notes               String?        // Observações sobre o cliente
+  
+  // Campos padrão do sistema
+  isActive            Boolean        @default(true)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@map("clients")
+}
+
+// Histórico de interações com clientes
+model ClientInteraction {
+  id                  String         @id @default(uuid())
+  
+  // Relacionamentos
+  clientId            String         // ID do cliente
+  client              Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  employeeId          String?        // ID do funcionário que realizou a interação (opcional)
+  employee            Employee?      @relation(fields: [employeeId], references: [id])
+  
+  // Dados da interação
+  interactionType     String         // Tipo de interação (EMAIL, PHONE_CALL, MEETING, etc.)
+  interactionDate     DateTime       // Data e hora da interação
+  description         String         // Descrição detalhada da interação
+  status              String         // Status da interação (SUCCESS, PENDING, etc.)
+  result              String         // Resultado da interação
+  
+  // Tags para categorização (armazenado como JSON)
+  tags                String[]       // Array de tags (SALES, SUPPORT, etc.)
+  
+  // Campos adicionais
+  duration            Int?           // Duração em minutos (para chamadas, reuniões)
+  followUpDate        DateTime?      // Data para follow-up
+  priority            String?        // Prioridade (LOW, MEDIUM, HIGH, URGENT)
+  cost                Decimal?       @tenantDb.Decimal(10, 2) // Custo da interação
+  
+  // Campos padrão do sistema
+  isActive            Boolean        @default(true)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@map("client_interactions")
 }

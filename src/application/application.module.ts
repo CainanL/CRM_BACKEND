@@ -8,14 +8,16 @@ import { ReposModule } from "src/repos/repos.module";
 import { PoliciesInitializer } from "./initializers/policies.initializer";
 import { RolesInitializer } from "./initializers/rules.initializer";
 import { RuleModule } from "./internal-services/master/rule/rule.module";
-import { CreateSolutionService } from "./internal-services/client/solution/create-solution/create-solution.service";
-import { SolutionModule } from "./internal-services/client/solution/solution.module";
+import { CreateSolutionService } from "./internal-services/solution/create-solution/create-solution.service";
+import { SolutionModule } from "./internal-services/solution/solution.module";
 import { GlobalModule } from "./common/global.module";
-import { DeleteSolutionService } from "./internal-services/client/solution/delete-solution/delete-solution.service";
+import { DeleteSolutionService } from "./internal-services/solution/delete-solution/delete-solution.service";
 import { DeveloperInitializer } from "./initializers/developer.initializer";
-import { CreateSolutionFieldSettingsService } from "./internal-services/client/solution/create-solution-field-settings/create-solution-field-settings.service";
+import { CreateSolutionFieldSettingsService } from "./internal-services/solution/create-solution-field-settings/create-solution-field-settings.service";
 import { EmailModule } from "./internal-services/email/email.module";
 import { EmployeeModule } from "./internal-services/employee/employee.module";
+import { ClientModule } from "./internal-services/client/client.module";
+import { ClientInteractionModule } from "./internal-services/client-interaction/client-interaction.module";
 
 @Module({
   imports: [
@@ -26,7 +28,9 @@ import { EmployeeModule } from "./internal-services/employee/employee.module";
     RuleModule,
     SolutionModule,
     EmailModule,
-    EmployeeModule
+    EmployeeModule,
+    ClientModule,
+    ClientInteractionModule
   ],
   providers: [
     // EmailService,
@@ -45,7 +49,9 @@ import { EmployeeModule } from "./internal-services/employee/employee.module";
     SolutionModule,
     DeveloperInitializer,
     EmailModule,
-    EmployeeModule
+    EmployeeModule,
+    ClientModule,
+    ClientInteractionModule
   ],
 })
 export class ApplicationModule { }

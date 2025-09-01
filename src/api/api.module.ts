@@ -6,6 +6,8 @@ import { InfraModule } from "src/infra/infra.module";
 import { TenantController } from "./controllers/master/tenant.controller";
 import { EmailController } from "./controllers/master/email.controller";
 import { EmployeeController } from "./controllers/client/employee.controller";
+import { ClientController } from "./controllers/client/client.controller";
+import { ClientInteractionController } from "./controllers/client-interaction/client-interaction.controller";
 
 @Module({
     imports: [
@@ -14,12 +16,14 @@ import { EmployeeController } from "./controllers/client/employee.controller";
     ],
     exports: [],
     providers: [],
-    controllers: [
-        UsersController,
-        SolutionController,
-        TenantController,
-        EmailController,
-        EmployeeController,
-    ]
+      controllers: [
+    UsersController,
+    SolutionController,
+    TenantController,
+    EmailController,
+    EmployeeController,
+    ClientController,
+    ClientInteractionController,
+  ]
 })
 export class ApiModule { }

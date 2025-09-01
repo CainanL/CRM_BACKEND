@@ -12,9 +12,10 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginService } from './services/login/login.service';
 import { GetUserTenantsService } from './services/get-users/get-user-tenants.service';
 import { RefreshTokenService } from './services/refresh-token/refresh-token.service';
+import { EmployeeModule } from '../../employee/employee.module';
 
 @Module({
-  imports: [ReposModule],
+  imports: [ReposModule, EmployeeModule],
   providers: [
     UsersService,
     RequestEmailValidatorCodeService,
@@ -37,7 +38,8 @@ import { RefreshTokenService } from './services/refresh-token/refresh-token.serv
     JwtService,
     LoginService,
     GetUserTenantsService,
-    RefreshTokenService
+    RefreshTokenService,
+    EmployeeModule
   ]
 })
 export class UsersModule { }

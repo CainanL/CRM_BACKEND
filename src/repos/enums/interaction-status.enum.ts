@@ -1,0 +1,11 @@
+export enum InteractionStatus {
+    SUCCESS = "SUCCESS",
+    PENDING = "PENDING",
+    REJECTED = "REJECTED",
+    FOLLOW_UP = "FOLLOW_UP",
+    CANCELLED = "CANCELLED",
+    RESCHEDULED = "RESCHEDULED",
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED"
+}
+

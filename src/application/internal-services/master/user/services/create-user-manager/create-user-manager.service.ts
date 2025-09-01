@@ -16,6 +16,7 @@ import { RuleRepository } from "src/repos/rule/rule.repository";
 import { Rules } from "src/repos/enums/rules.enum";
 import { UserPolicyRuleRepository } from "src/repos/user-policy-rule/user-policy-rule.repository";
 import { MasterPrismaService } from "src/infra/services/master-prisma.service";
+import { CreateEmployeeService } from "src/application/internal-services/employee/create-employee/create-employee.service";
 
 @Injectable()
 export class CreateUserManagerService extends HandlerBase<CreateUserManagerRequest, UserVm> {
@@ -30,29 +31,30 @@ export class CreateUserManagerService extends HandlerBase<CreateUserManagerReque
         private readonly masterClient: MasterPrismaService,
         private readonly ruleRepository: RuleRepository,
         private readonly userPolicyRuleRepository: UserPolicyRuleRepository,
-        private readonly tenantServiceInjected: TenantService
+        private readonly tenantServiceInjected: TenantService,
+        private readonly createEmployeeService: CreateEmployeeService
     ) {
         super();
     }
 
-    protected async executeCore({ email, name, password }: CreateUserManagerRequest, data?: any): Promise<UserVm> {
+    protected async executeCore(request: CreateUserManagerRequest, data?: any): Promise<UserVm> {
 
         const tenantId = uuid(); // Generate a unique tenant ID
 
-        const emailIsIsRegistred = await this.emailValidatorCodeRepository.findFirst({ email });
+        const emailIsIsRegistred = await this.emailValidatorCodeRepository.findFirst({ email: request.email });
         if (!emailIsIsRegistred)
             throw new BaseException("E-mail utilizado não foi validado, solicite um código de validação e valide seu e-mail para registrar o usuário.");
 
         if (!emailIsIsRegistred.isActive)
-            throw new BaseException(`Foi enviado um código para ${email}, porém o e-mail ainda não foi validado, valide o e-mail utilizando o código enviado ou solicite um novo código e tente novamente`);
+            throw new BaseException(`Foi enviado um código para ${request.email}, porém o e-mail ainda não foi validado, valide o e-mail utilizando o código enviado ou solicite um novo código e tente novamente`);
 
-        const userIsRegistred = await this.userRepository.exists({ email });
+        const userIsRegistred = await this.userRepository.exists({ email: request.email });
         if (userIsRegistred)
             throw new BaseException("Usuário já operante");
 
         this.logger.debug("Senha validada");
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(request.password, 10);
         this.logger.debug("Hash da senha criada");
 
         const tenant = await this.masterClient.tenant.create({
@@ -92,9 +94,9 @@ export class CreateUserManagerService extends HandlerBase<CreateUserManagerReque
             try {
                 user = await context.user.create({
                     data: {
-                        email,
+                        email: request.email,
                         password: hashedPassword,
-                        name,
+                        name: request.name,
                         tenantId: tenant.id,
                         isActive: true,
                     }
@@ -102,7 +104,7 @@ export class CreateUserManagerService extends HandlerBase<CreateUserManagerReque
                 this.logger.debug(`Usuário criado: ${user.email}`);
             } catch (error) {
                 if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
-                    throw new BaseException(`Já existe um usuário cadastrado com o email: ${email}`);
+                    throw new BaseException(`Já existe um usuário cadastrado com o email: ${request.email}`);
                 }
                 throw error;
             }
@@ -140,25 +142,15 @@ export class CreateUserManagerService extends HandlerBase<CreateUserManagerReque
         });
 
         if (!requestToken || !refreshToken) throw new BaseException("Internal auth error", 500);
+
+
+        await this.createEmployeeService.execute(request.employee, data);
+
+
         return new UserVm(user, requestToken, refreshToken);
     }
 
-    /**
-     * Aplica o schema do tenant no novo banco
-     */
-    // private async applyTenantSchema(tenantId: string): Promise<void> {
-    //     try {
-    //         const tenantClient = await this.tenantServiceInjected!.getTenantClient(tenantId);
 
-    //         // Executar uma query simples para forçar aplicação do schema
-    //         await tenantClient.$executeRaw`SELECT 1`;
-
-    //         this.logger.debug(`✅ Schema aplicado para tenant: ${tenantId}`);
-    //     } catch (error) {
-    //         this.logger.debug(`❌ Erro ao aplicar schema para tenant ${tenantId}:`, error);
-    //         throw error;
-    //     }
-    // }
     private async applyTenantSchemaAndSetupContext(tenantId: string): Promise<void> {
         try {
             // Configura o TenantService dinamicamente para poder usar this.context
@@ -176,7 +168,7 @@ export class CreateUserManagerService extends HandlerBase<CreateUserManagerReque
             this.logger.debug(`✅ Schema aplicado e context configurado para tenant: ${tenantId}`);
         } catch (error) {
             this.logger.debug(`❌ Erro ao aplicar schema para tenant ${tenantId}:`, error);
-            // throw error;
+            throw error;
         }
     }
 
