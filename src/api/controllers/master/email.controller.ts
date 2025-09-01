@@ -1,4 +1,5 @@
-import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpException, HttpStatus, Get } from '@nestjs/common';
+import { ApiTenant } from 'src/api/decorators/tenant.decorator';
 import { EmailService } from 'src/application/internal-services/email/email.service';
 
 export class SendEmailDto {
@@ -11,8 +12,33 @@ export class SendEmailDto {
 }
 
 @Controller('email')
+@ApiTenant()
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
+
+  @Get('test-connection')
+  async testConnection() {
+    try {
+      const success = await this.emailService.testConnection();
+      
+      if (success) {
+        return { 
+          message: 'Conexão SMTP testada com sucesso',
+          status: 'success'
+        };
+      } else {
+        throw new HttpException(
+          'Falha na conexão SMTP',
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Erro ao testar conexão SMTP',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
 
   @Post('send')
   async sendEmail(@Body() emailDto: SendEmailDto) {

@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
         if (!this.tokenService.isAccessTokenValid(token)) throw new UnauthorizedException('Token inválido ou expirado');
 
         const payload = this.tokenService.getPayload(token);
-
+        
         if (!payload?.id) throw new UnauthorizedException('Payload inválido');
 
         const user = await this.masterClient.user.findFirst({
@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
         if (user.tenantId != tenantId) throw new UnauthorizedException('Acesso negado!');;
 
         req.user = user;
-
+        
         return true
     }
 

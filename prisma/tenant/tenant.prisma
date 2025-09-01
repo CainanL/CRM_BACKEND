@@ -14,7 +14,7 @@ model Solution {
   name        String                     @unique
   description String?
   priceRanger SolutionPriceRanger[]
-  documents   SolutionCapturedDocument[]
+  documents   SolutionCapturedLead[]
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -28,10 +28,10 @@ model Solution {
 // valor cobrado por determinado ranger. Ex: R$ 600 por KWp, R$ 120 por hora.
 model SolutionPriceRanger {
   id                String   @id @default(uuid())
-  title             String   @unique
+  title             String   
   description       String?
   price             Decimal? @tenantDb.Decimal(10, 2)
-  ranger            Decimal? @unique @tenantDb.Decimal(10, 2)
+  ranger            Decimal?  @tenantDb.Decimal(10, 2)
   unitOfMeasurement String?
 
   solutionId String
@@ -47,11 +47,13 @@ model SolutionPriceRanger {
 // Parâmetros para criação do input. Ex: dataType: CPF, formatType: string, mask: 999.999.999-99, title: CPF, placeholder: CPF
 model SolutionFieldSettings {
   id          String  @id @default(uuid())
-  dataType    String
-  formatType  String
-  mask        String?
-  title       String  
-  placeholder String
+  dataType    String                    // Tipo de dado (text, email, phone, number, date, etc.)
+  formatType  String                    // Formato específico (cpf, cnpj, phone, etc.)
+  mask        String?                   // Máscara para formatação
+  title       String                    // Título do campo
+  placeholder String                    // Placeholder do input
+  isRequired  Boolean                   @default(false)  // Campo obrigatório
+  order       Int                       @default(0)      // Ordem de exibição
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -62,13 +64,13 @@ model SolutionFieldSettings {
 
   SolutionFieldValue SolutionFieldValue[]
 
-
   @@map("solution_field_settings")
 }
 
 // Valor do input. Ex: CPF, valor = 000.000.000-00
 model SolutionFieldValue {
   id    String  @id @default(uuid())
+  title String
   value String?
 
   isActive  Boolean  @default(true)
@@ -76,7 +78,7 @@ model SolutionFieldValue {
   updatedAt DateTime @updatedAt
 
   documentId String
-  document   SolutionCapturedDocument @relation(fields: [documentId], references: [id])
+  document   SolutionCapturedLead @relation(fields: [documentId], references: [id])
 
   settingsId String
   settings SolutionFieldSettings @relation(fields: [settingsId], references: [id])
@@ -85,17 +87,77 @@ model SolutionFieldValue {
 }
 
 // Contem o agrupamento de inputs de cada solution juntando os dados de input e vinculando a informação ao lead que está sendo criado aqui.
-model SolutionCapturedDocument {
+// Cada SolutionCapturedDocument representa um lead completo
+model SolutionCapturedLead {
   id String @id @default(uuid())
 
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // Status do lead (opcional, pode ser configurado pelo usuário)
+  status      String?                   @default("NEW")
+  
+  // Campos padrão do sistema
+  isActive    Boolean                   @default(true)
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
 
-  fielValues SolutionFieldValue[]
+  // Relacionamentos
+  fielValues  SolutionFieldValue[]
+  solutionId  String
+  solution    Solution @relation(fields: [solutionId], references: [id])
 
-  solutionId String
-  solution   Solution @relation(fields: [solutionId], references: [id])
+  @@map("solution_captured_leads")
+}
 
-  @@map("solution_captured_documents")
+// Endereço do funcionário
+model EmployeeAddress {
+  id          String   @id @default(uuid())
+  street      String   // Nome da rua
+  number      String   // Número da residência
+  complement String?   // Complemento (opcional)
+  district   String   // Bairro
+  city       String   // Cidade
+  state      String   // Estado
+  cep        String   // CEP
+  
+  // Relacionamento com Employee (1:1)
+  employeeId String   @unique
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  // Campos padrão do sistema
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("employee_addresses")
+}
+
+// Funcionário da empresa
+model Employee {
+  id                  String         @id @default(uuid())
+  fullName            String         // Nome completo do funcionário
+  photo               String?        // URL da foto (opcional)
+  cpf                 String         @unique // CPF único
+  birthDate           DateTime       // Data de nascimento
+  sex                 String         // Sexo (MALE, FEMALE, OTHER)
+  email               String         @unique // Email único
+  phone               String?        // Telefone (opcional)
+  
+  // Relacionamento com endereço (1:1)
+  address             EmployeeAddress?
+  
+  function            String         // Cargo/função
+  department          String         // Departamento
+  internalRegistration String        @unique // Registro interno único
+  admissionDate       DateTime       // Data de admissão
+  typeOfContract      String         // Tipo de contrato (CLT, PJ, TEMPORARY, INTERNSHIP, TRAINEE)
+  salary              Decimal        @tenantDb.Decimal(10, 2) // Salário base
+  comission           Decimal?       @tenantDb.Decimal(10, 2) // Comissão (opcional)
+  status              String         // Status (ACTIVE, INACTIVE, VACATION, ON_LEAVE, TERMINATED)
+  userId              String?        // Referência ao usuário para autenticação (opcional)
+  
+  // Campos padrão do sistema
+  isActive            Boolean        @default(true)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@map("employees")
 }

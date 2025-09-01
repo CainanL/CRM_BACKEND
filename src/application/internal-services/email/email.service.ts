@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import * as handlebars from 'handlebars';
@@ -8,27 +8,46 @@ import { EmailConfig } from './models/email-config.model';
 import { EmailOptions } from './models/email-options.model';
 
 @Injectable()
-export class EmailService {
+export class EmailService implements OnModuleInit {
     private transporter: nodemailer.Transporter;
     private readonly logger = new Logger(EmailService.name);
+    private isInitialized = false;
 
     constructor(private configService: ConfigService) {
-        this.createTransporter();
+        // Não criar o transporter no construtor
     }
 
-    private createTransporter() {
+    async onModuleInit() {
+        await this.initializeEmailService();
+    }
+
+    private async initializeEmailService() {
+        try {
+            await this.createTransporter();
+            this.isInitialized = true;
+            this.logger.log('✅ Serviço de email inicializado com sucesso');
+        } catch (error) {
+            this.logger.error('❌ Falha ao inicializar serviço de email:', error.message);
+            // Não falhar a aplicação, apenas logar o erro
+            this.isInitialized = false;
+        }
+    }
+
+    private async createTransporter() {
         const config: EmailConfig = {
             host: this.configService.get<string>('SMTP_HOST')!,
             port: this.configService.get<number>('SMTP_PORT')!,
-            secure: this.configService.get<string>('SMTP_SECURE')! == "false" ? false : true,
+            secure: this.configService.get<string>('SMTP_SECURE')! === "true",
             user: this.configService.get<string>('SMTP_USER')!,
             pass: this.configService.get<string>('SMTP_PASS')!,
             from: this.configService.get<string>('SMTP_FROM')!,
         };
+        
         this.validateConfig(config);
-        this.logger.debug(JSON.stringify(config))
+        this.logger.debug('Configuração SMTP:', JSON.stringify(config, null, 2));
 
-        this.transporter = nodemailer.createTransport({
+        // Configurações específicas para o Titans
+        const transporterOptions: any = {
             host: config.host,
             port: config.port,
             secure: config.secure,
@@ -36,38 +55,82 @@ export class EmailService {
                 user: config.user,
                 pass: config.pass,
             },
-        });
+            // Configurações específicas para o Titans
+            tls: {
+                rejectUnauthorized: false, // Para evitar problemas de certificado SSL
+                //ciphers: 'SSLv3', // Ciphers compatíveis com o Titans
+            },
+            // Timeout para conexão
+            connectionTimeout: 60000,
+            greetingTimeout: 30000,
+            socketTimeout: 60000,
+            // Configurações adicionais para estabilidade
+            pool: false,
+            maxConnections: 1,
+            maxMessages: 1,
+        };
+
+        // Configurações específicas baseadas na porta
+        if (config.port === 587) {
+            transporterOptions.requireTLS = true;
+            transporterOptions.ignoreTLS = false;
+        }
+
+        this.transporter = nodemailer.createTransport(transporterOptions);
 
         // Verificar conexão
-        this.verifyConnection();
-        // this.transporter.verify((error, success) => {
-        //     if (error) {
-        //         this.logger.error('Erro na configuração do email:', error);
-        //     } else {
-        //         this.logger.log('Servidor de email configurado com sucesso');
-        //     }
-        // });
+        await this.verifyConnection();
     }
 
     private async verifyConnection(): Promise<void> {
         try {
             await this.transporter.verify();
-            this.logger.log('✅ Servidor de email configurado com sucesso');
+            this.logger.log('✅ Conexão SMTP verificada com sucesso');
         } catch (error) {
-            this.logger.error('❌ Erro na configuração do email:', error.message);
+            this.logger.error('❌ Erro na verificação da conexão SMTP:', error.message);
             
-            // Sugestões baseadas no tipo de erro
-            if (error.code === 'ETIMEDOUT') {
+            // Sugestões específicas para o Titans
+            if (error.code === 'EAUTH') {
+                this.logger.error('💡 Erro de autenticação - Verifique:');
+                this.logger.error('   - Usuário e senha estão corretos');
+                this.logger.error('   - A conta não está bloqueada');
+                this.logger.error('   - As configurações de SMTP estão corretas');
+                this.logger.error('   - Para Titans: verifique se a senha não expirou');
+            } else if (error.code === 'ETIMEDOUT') {
                 this.logger.error('💡 Dica: Verifique se a porta e SSL estão corretos:');
                 this.logger.error('   - Porta 465: use SMTP_SECURE=true');
                 this.logger.error('   - Porta 587: use SMTP_SECURE=false');
+            } else if (error.code === 'ECONNREFUSED') {
+                this.logger.error('💡 Dica: Verifique se o host SMTP está correto');
+                this.logger.error('   - Para Titans: smtp.titans.com.br');
+            } else if (error.code === 'ECONNRESET') {
+                this.logger.error('💡 Dica: Problema de conexão - verifique firewall/proxy');
             }
+            
+            // Log mais detalhado para debug
+            this.logger.debug('Configuração atual:', {
+                host: this.configService.get<string>('SMTP_HOST'),
+                port: this.configService.get<string>('SMTP_PORT'),
+                secure: this.configService.get<string>('SMTP_SECURE'),
+                user: this.configService.get<string>('SMTP_USER'),
+                from: this.configService.get<string>('SMTP_FROM')
+            });
             
             throw error;
         }
     }
 
     async sendEmail(options: EmailOptions): Promise<boolean> {
+        if (!this.isInitialized) {
+            this.logger.warn('⚠️ Serviço de email não inicializado. Tentando inicializar...');
+            try {
+                await this.initializeEmailService();
+            } catch (error) {
+                this.logger.error('❌ Falha ao inicializar serviço de email para envio');
+                return false;
+            }
+        }
+
         try {
             const mailOptions: nodemailer.SendMailOptions = {
                 from: this.configService.get<string>('SMTP_FROM'),
@@ -177,6 +240,26 @@ export class EmailService {
         }
         if (config.port === 587 && config.secure) {
             this.logger.warn('⚠️  Porta 587 geralmente usa SMTP_SECURE=false (STARTTLS)');
+        }
+
+        // Validações específicas para o Titans
+        if (config.host.includes('titans')) {
+            this.logger.log('🔧 Configuração detectada para Titans - aplicando configurações específicas');
+        }
+    }
+
+    // Método para testar a conexão manualmente
+    async testConnection(): Promise<boolean> {
+        try {
+            if (!this.transporter) {
+                await this.initializeEmailService();
+            }
+            await this.transporter.verify();
+            this.logger.log('✅ Teste de conexão SMTP bem-sucedido');
+            return true;
+        } catch (error) {
+            this.logger.error('❌ Teste de conexão SMTP falhou:', error.message);
+            return false;
         }
     }
 }

@@ -9,7 +9,6 @@ export class PoliciesRolesGuard implements CanActivate {
     constructor(private reflector: Reflector, private readonly logger: Logger) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        this.logger.debug("entrou")
         // const required = this.reflector.get<{ policy: string; role: string }>('policyRole', context.getHandler());
         const required = this.reflector.get<PolicyRoleMetadata>(
             'policyRole',
@@ -89,7 +88,7 @@ export class PoliciesRolesGuard implements CanActivate {
                 `Access denied. Required policies: [${policies.join(', ')}], roles: [${roles.join(', ')}]`,
             );
         }
-
+        
         return true;
 
     }

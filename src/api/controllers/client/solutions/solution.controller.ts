@@ -13,12 +13,20 @@ import { DeleteSolutionRequest } from "src/application/internal-services/client/
 import { DeleteSolutionService } from "src/application/internal-services/client/solution/delete-solution/delete-solution.service";
 import { GetSolutionByIdRequest } from "src/application/internal-services/client/solution/get-solution-by-id/get-solution-by-id.request";
 import { GetSolutionByIdService } from "src/application/internal-services/client/solution/get-solution-by-id/get-solution-by-id.service";
+import { QueryLeadsRequest } from "src/application/internal-services/client/solution/query-leads/query-leads.request";
+import { QueryLeadsService } from "src/application/internal-services/client/solution/query-leads/query-leads.service";
 import { QuerySolutionRequest } from "src/application/internal-services/client/solution/query-solution/query-solution.request";
 import { QuerySolutionService } from "src/application/internal-services/client/solution/query-solution/query-solution.service";
 import { RemoveSolutionPriceRequest } from "src/application/internal-services/client/solution/remove-solution-price/remove-solution-price.request";
 import { RemoveSolutionPriceService } from "src/application/internal-services/client/solution/remove-solution-price/remove-solution-price.service";
 import { UpdateSolutionRequest } from "src/application/internal-services/client/solution/update-solution/update-solution.request";
 import { UpdateSolutionService } from "src/application/internal-services/client/solution/update-solution/update-solution.service";
+import { GetSolutionFieldValuesRequest } from "src/application/internal-services/client/solution/get-solution-field-values/get-solution-field-values.request";
+import { GetSolutionFieldValuesService } from "src/application/internal-services/client/solution/get-solution-field-values/get-solution-field-values.service";
+import { GetSolutionFieldSettingsRequest } from "src/application/internal-services/client/solution/get-solution-field-settings/get-solution-field-settings.request";
+import { GetSolutionFieldSettingsService } from "src/application/internal-services/client/solution/get-solution-field-settings/get-solution-field-settings.service";
+import { CreateSolutionCapturedLeadRequest } from "src/application/internal-services/client/solution/create-solution-captured-lead/create-solution-captured-lead.request";
+import { CreateSolutionCapturedLeadService } from "src/application/internal-services/client/solution/create-solution-captured-lead/create-solution-captured-lead.service";
 import { Policies } from "src/repos/enums/polices.enum";
 import { Rules } from "src/repos/enums/rules.enum";
 
@@ -32,7 +40,11 @@ export class SolutionController {
         private readonly deleteSolutionService: DeleteSolutionService,
         private readonly removeSolutionPriceService: RemoveSolutionPriceService,
         private readonly createSolutionFieldSettingsService: CreateSolutionFieldSettingsService,
-        private readonly getSolutionByIdService: GetSolutionByIdService
+        private readonly getSolutionByIdService: GetSolutionByIdService,
+        private readonly queryLeadsService: QueryLeadsService,
+        private readonly getSolutionFieldValuesService: GetSolutionFieldValuesService,
+        private readonly getSolutionFieldSettingsService: GetSolutionFieldSettingsService,
+        private readonly createSolutionCapturedLeadService: CreateSolutionCapturedLeadService
     ) { }
 
     @Post()
@@ -80,9 +92,37 @@ export class SolutionController {
     @UseGuards(AuthGuard, PoliciesRolesGuard)
     async createSolutionFieldSettings(@Body() body: CreateSolutionFieldSettingsRequest, @Request() req) {
         return await this.createSolutionFieldSettingsService.execute(body, req);
+    }    
+
+    @Get("/field-values/:solutionId")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_VIEW])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async getSolutionFieldValues(@Param() param: GetSolutionFieldValuesRequest, @Request() req) {
+        return await this.getSolutionFieldValuesService.execute(param, req);
     }
 
-    @Get("/solution/:id")
+    @Get("/field-settings/:solutionId")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_VIEW])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async getSolutionFieldSettings(@Param() param: GetSolutionFieldSettingsRequest, @Request() req) {
+        return await this.getSolutionFieldSettingsService.execute(param, req);
+    }
+
+    @Post("/lead")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_CREATE])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async createSolutionCapturedLead(@Body() body: CreateSolutionCapturedLeadRequest, @Request() req) {
+        return await this.createSolutionCapturedLeadService.execute(body, req);
+    }
+
+    @Get("/leads")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_LIST])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async getLeadsById(@Query() param: QueryLeadsRequest, @Request() req) {
+        return await this.queryLeadsService.execute(param, req);
+    }
+
+    @Get("/:id")
     @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_VIEW])
     @UseGuards(AuthGuard, PoliciesRolesGuard)
     async getSolutionById(@Param() param: GetSolutionByIdRequest, @Request() req) {

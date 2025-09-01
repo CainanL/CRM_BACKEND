@@ -7,9 +7,7 @@ import { SolutionVm } from "src/application/ViewModels/solution/solution.vm";
 export class CreateSolutionService extends HandlerBase<CreateSolutionRequest, SolutionVm> {
 
     protected async executeCore(request: CreateSolutionRequest, data?: any): Promise<SolutionVm> {
-        const res = await this.transaction(async (tx) => {
-            return await tx.solution.create({ data: request });
-        });
+        const res = await this.context.solution.create({ data: request });
         return new SolutionVm(res);
     }
 

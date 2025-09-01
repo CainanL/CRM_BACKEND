@@ -14,6 +14,8 @@ import { GlobalModule } from "./common/global.module";
 import { DeleteSolutionService } from "./internal-services/client/solution/delete-solution/delete-solution.service";
 import { DeveloperInitializer } from "./initializers/developer.initializer";
 import { CreateSolutionFieldSettingsService } from "./internal-services/client/solution/create-solution-field-settings/create-solution-field-settings.service";
+import { EmailModule } from "./internal-services/email/email.module";
+import { EmployeeModule } from "./internal-services/employee/employee.module";
 
 @Module({
   imports: [
@@ -23,10 +25,11 @@ import { CreateSolutionFieldSettingsService } from "./internal-services/client/s
     PolicyModule,
     RuleModule,
     SolutionModule,
-    
+    EmailModule,
+    EmployeeModule
   ],
   providers: [
-    EmailService,
+    // EmailService,
     ConfigService,
     GetPoliciesService,
     PoliciesInitializer,
@@ -41,6 +44,8 @@ import { CreateSolutionFieldSettingsService } from "./internal-services/client/s
     RuleModule,
     SolutionModule,
     DeveloperInitializer,
+    EmailModule,
+    EmployeeModule
   ],
 })
 export class ApplicationModule { }
