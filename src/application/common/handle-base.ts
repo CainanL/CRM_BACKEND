@@ -3,11 +3,22 @@ import { ApiResponse } from "./models/response/api.response";
 import { BaseException } from "./exceptions/base-exception";
 import { TenantService } from "src/infra/services/tenant.service";
 import { PrismaClient as TenantClient } from '.prisma/tenant-client';
-import { User } from ".prisma/master-client";
+import { Prisma, User } from ".prisma/master-client";
 
 export interface IRequestWithTenant {
     tenantId?: string;
 }
+
+type UserWithRelations = Prisma.UserGetPayload<{
+    include: { 
+        UserPolicyRule: {
+            include: {
+                policy: true,
+                rule: true
+            }
+        }
+    }
+}>;
 
 export interface IHandlerBase<TRequest, TResponse> {
     execute(request: TRequest, data?: unknown): Promise<ApiResponse<TResponse>>;
@@ -20,8 +31,8 @@ export abstract class HandlerBase<TRequest, TResponse> implements IHandlerBase<T
     private _dbClient: TenantClient | null = null;
     private _tenantId: string | null = null;
     private _dynamicTenantService: TenantService | null = null;
-    private _user: User;
-    public get user() {
+    private _user: UserWithRelations;
+    public get user(): UserWithRelations {
         if (!this._user) throw new BaseException("User not implemented", 500);
         return this._user;
     }

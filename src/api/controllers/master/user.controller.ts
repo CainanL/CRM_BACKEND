@@ -6,11 +6,11 @@ import { CheckEmailValidatorCodeService } from 'src/application/internal-service
 import { GetPoliciesService } from 'src/application/internal-services/master/policy/services/get-policies/get-policies.service';
 import { GetRulesService } from 'src/application/internal-services/master/rule/get-rules.service';
 import { CreateUserManagerService } from 'src/application/internal-services/master/user/services/create-user-manager/create-user-manager.service';
-import { CreateUserBaseRequest } from 'src/application/common/models/request/create-user-base.request';
 import { LoginRequest } from 'src/application/internal-services/master/user/services/login/login.request';
 import { LoginService } from 'src/application/internal-services/master/user/services/login/login.service';
 import { RefreshTokenRequest } from 'src/application/internal-services/master/user/services/refresh-token/refresh-token.request';
 import { RefreshTokenService } from 'src/application/internal-services/master/user/services/refresh-token/refresh-token.service';
+import { CreateUserManagerRequest } from 'src/application/internal-services/master/user/services/create-user-manager/create-user-manager.request';
 
 
 @Controller('users')
@@ -50,7 +50,7 @@ export class UsersController {
   }
 
   @Post("/master")
-  async createUserMaster(@Body() request: CreateUserBaseRequest) {
+  async createUserMaster(@Body() request: CreateUserManagerRequest) {
     return await this.createUserManagerService.execute(request);
   }
 

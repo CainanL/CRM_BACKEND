@@ -28,18 +28,24 @@ export class CreatePipelineStageService extends HandlerBase<CreatePipelineStageR
                 orderBy: { position: 'asc' }
             });
 
+            const containerWithSameName = existingStages.find(stage => stage.name === request.name);
+            if (containerWithSameName) {
+                throw new BaseException("Já existe um estágio com este nome", 400);
+            }
+
             // Reordenar estágios se necessário
             if (request.position <= existingStages.length) {
                 // Mover estágios existentes para baixo
                 const stagesToUpdate = existingStages.filter(stage => stage.position >= request.position);
-                
+
                 for (const stage of stagesToUpdate) {
                     await tx.pipelineStage.update({
                         where: { id: stage.id },
                         data: { position: stage.position + 1 }
                     });
                 }
-            }
+            } 
+
 
             const stage = await tx.pipelineStage.create({
                 data: {

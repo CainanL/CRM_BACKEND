@@ -23,6 +23,14 @@ export class QueryBase {
     @IsString()
     textSearch?: string = "";
 
+    @IsOptional()
+    @IsString()
+    sortBy?: string = 'updatedAt';
+  
+    @IsOptional()
+    @IsString()
+    sortOrder?: 'asc' | 'desc' = 'desc';
+
     get skip() {
         if (!this.page || !this.size) return 0;
         return (this.page - 1) * this.size;
