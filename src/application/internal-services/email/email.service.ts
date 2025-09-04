@@ -44,7 +44,6 @@ export class EmailService implements OnModuleInit {
         };
         
         this.validateConfig(config);
-        this.logger.debug('Configuração SMTP:', JSON.stringify(config, null, 2));
 
         // Configurações específicas para o Titans
         const transporterOptions: any = {
@@ -108,13 +107,7 @@ export class EmailService implements OnModuleInit {
             }
             
             // Log mais detalhado para debug
-            this.logger.debug('Configuração atual:', {
-                host: this.configService.get<string>('SMTP_HOST'),
-                port: this.configService.get<string>('SMTP_PORT'),
-                secure: this.configService.get<string>('SMTP_SECURE'),
-                user: this.configService.get<string>('SMTP_USER'),
-                from: this.configService.get<string>('SMTP_FROM')
-            });
+            this.logger.debug('Configuração atual:', {user: this.configService.get<string>('SMTP_USER')});
             
             throw error;
         }

@@ -13,6 +13,7 @@ export function configureCors(app: INestApplication<any>): void {
       'Authorization',
       'Cache-Control',
       'Pragma',
+      'x-tenant-id'
     ],
     credentials: true, // Permite cookies e headers de autenticação
     preflightContinue: false,

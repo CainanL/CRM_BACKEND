@@ -22,6 +22,8 @@ import { PipelineModule } from "./internal-services/pipeline/pipeline.module";
 import { AgendaModule } from "./internal-services/agenda/agenda.module";
 import { CommunicationModule } from "./internal-services/communication/communication.module";
 import { AutomationModule } from "./internal-services/automation/automation.module";
+import { MigrationModule } from "./internal-services/master/migration/migration.module";
+import { MigrationInitializer } from "./initializers/migration.initializer";
 
 @Module({
   imports: [
@@ -38,7 +40,8 @@ import { AutomationModule } from "./internal-services/automation/automation.modu
     PipelineModule,
     AgendaModule,
     CommunicationModule,
-    AutomationModule
+    AutomationModule,
+    MigrationModule
   ],
   providers: [
     // EmailService,
@@ -48,6 +51,7 @@ import { AutomationModule } from "./internal-services/automation/automation.modu
     RolesInitializer,
     Logger,
     DeveloperInitializer,
+    MigrationInitializer,
   ],
   exports: [
     GlobalModule,
@@ -63,7 +67,8 @@ import { AutomationModule } from "./internal-services/automation/automation.modu
     PipelineModule,
     AgendaModule,
     CommunicationModule,
-    AutomationModule
+    AutomationModule,
+    MigrationModule
   ],
 })
 export class ApplicationModule { }

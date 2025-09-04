@@ -107,7 +107,6 @@ export class DeveloperInitializer extends HandlerBase<null, null> implements OnA
             timeout: 10000
         });
 
-        if (!requestToken || !refreshToken) throw new BaseException("Internal auth error", 500);
         return null;
     }
     constructor(

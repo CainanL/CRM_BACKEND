@@ -94,7 +94,7 @@ model SolutionCapturedLead {
   id String @id @default(uuid())
 
   // Status do lead (opcional, pode ser configurado pelo usuário)
-  status String? @default("NEW")
+  status String @default("NEW")
 
   // Campos padrão do sistema
   isActive  Boolean  @default(true)
