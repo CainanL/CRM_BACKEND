@@ -38,6 +38,7 @@ export class QueryBase {
 
     get take() {
         if (!this.size) return 0;
+        if(this.size > 100) return 100;
         return this.size;
     }
 }

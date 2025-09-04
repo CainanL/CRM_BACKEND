@@ -14,7 +14,7 @@ export class CheckEmailValidatorCodeService extends HandlerBase<CheckEmailValida
 
     protected async executeCore({ email, code }: CheckEmailValidatorCodeRequest, data?: any): Promise<null> {
         const evc = await this.emailValidatorCodeRepository.findFirst({ email });
-
+        this.logger.debug(`code: ${code} - evc: ${evc?.code}`);
         if (!evc)
             throw new BaseException("E-mail inválido");
 

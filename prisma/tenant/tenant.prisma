@@ -8,30 +8,7 @@ datasource tenantDb {
   url      = env("TENANT_DATABASE_URL")
 }
 
-// Usuário do tenant (referência ao usuário master)
-// model User {
-//   id       String @id @default(uuid())
-//   email    String @unique
-//   name     String
-//   tenantId String // Referência ao tenant no banco master
 
-//   // Relacionamentos com atividades
-//   responsibleActivities Activity[] @relation("ActivityResponsible")
-//   createdActivities     Activity[] @relation("ActivityCreatedBy")
-  
-//   // Relacionamentos com notificações
-//   notifications Notification[]
-  
-//   // Relacionamentos com integrações de calendário
-//   calendarIntegrations CalendarIntegration[]
-
-//   // Campos padrão do sistema
-//   isActive  Boolean  @default(true)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   @@map("users")
-// }
 
 // Solução, nome da atividade. Ex: Projeto Elétrico, energia solar, desenvolvimento de software.
 model Solution {
@@ -209,20 +186,25 @@ model Employee {
   userId               String? // Referência ao usuário para autenticação (opcional)
 
   // Campos padrão do sistema
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("employees")
-  Notification Notification[]
+  isActive            Boolean               @default(true)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  Notification        Notification[]
   CalendarIntegration CalendarIntegration[]
-  ActivityResponsible Activity[] @relation("ActivityResponsible")
-  ActivityCreatedBy Activity[] @relation("ActivityCreatedBy")
-  
+  ActivityResponsible Activity[]            @relation("ActivityResponsible")
+  ActivityCreatedBy   Activity[]            @relation("ActivityCreatedBy")
+
   // Relacionamentos com comunicação
   assignedConversations Conversation[]
-  assignedChannels CommunicationChannel[]
-  messages Message[]
+  assignedChannels      CommunicationChannel[]
+  messages              Message[]
+
+  // Relacionamentos com automação e marketing
+  createdMarketingCampaigns   MarketingCampaign[]
+  createdMarketingAutomations MarketingAutomation[]
+  createdCampaignTemplates    CampaignTemplate[]
+
+  @@map("employees")
 }
 
 // Cliente da empresa
@@ -264,12 +246,12 @@ model Client {
   notes        String? // Observações sobre o cliente
 
   // Campos padrão do sistema
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Activity  Activity[]
 
   @@map("clients")
-  Activity Activity[]
 }
 
 // Histórico de interações com clientes
@@ -408,7 +390,7 @@ model Opportunity {
 
 // Atividade/Agenda
 model Activity {
-  id          String @id @default(uuid())
+  id          String    @id @default(uuid())
   type        String // TASK, APPOINTMENT, FOLLOW_UP, MEETING, CALL, EMAIL, REMINDER, DEADLINE, OTHER
   title       String // Título da atividade
   description String? // Descrição da atividade
@@ -430,7 +412,7 @@ model Activity {
 
   // Lembrete e notificações
   reminderDate DateTime? // Data para lembrete
-  reminderSent Boolean @default(false) // Se o lembrete já foi enviado
+  reminderSent Boolean   @default(false) // Se o lembrete já foi enviado
 
   // Integração com calendário externo
   externalEventId String? // ID do evento no calendário externo (ex: Google Event ID)
@@ -448,12 +430,12 @@ model Activity {
 
 // Notificação
 model Notification {
-  id          String @id @default(uuid())
-  type        String // EMAIL, PUSH, SMS, IN_APP, WHATSAPP
-  message     String // Mensagem da notificação
-  sentAt      DateTime? // Data de envio
-  isRead      Boolean @default(false) // Se foi lida
-  readAt      DateTime? // Data de leitura
+  id      String    @id @default(uuid())
+  type    String // EMAIL, PUSH, SMS, IN_APP, WHATSAPP
+  message String // Mensagem da notificação
+  sentAt  DateTime? // Data de envio
+  isRead  Boolean   @default(false) // Se foi lida
+  readAt  DateTime? // Data de leitura
 
   // Relacionamentos
   activityId String // ID da atividade relacionada
@@ -472,12 +454,12 @@ model Notification {
 
 // Integração com calendário externo
 model CalendarIntegration {
-  id                String @id @default(uuid())
-  provider          String // GOOGLE, OUTLOOK, APPLE, CALDAV, OTHER
-  accessToken       String // Token de acesso OAuth
-  refreshToken      String? // Token de refresh (se disponível)
+  id                 String  @id @default(uuid())
+  provider           String // GOOGLE, OUTLOOK, APPLE, CALDAV, OTHER
+  accessToken        String // Token de acesso OAuth
+  refreshToken       String? // Token de refresh (se disponível)
   externalCalendarId String // ID do calendário no sistema externo
-  isActive          Boolean @default(true) // Se a integração está ativa
+  isActive           Boolean @default(true) // Se a integração está ativa
 
   // Relacionamentos
   employeeId String // ID do usuário
@@ -493,75 +475,75 @@ model CalendarIntegration {
 
 // Canal de comunicação configurado para o tenant
 model CommunicationChannel {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   channelType String // EMAIL, WHATSAPP, SMS, PHONE_CALL, etc.
   name        String // Nome amigável do canal
   description String? // Descrição do canal
-  
+
   // Configurações específicas do canal (armazenadas como JSON)
   settings Json // Ex: API keys, tokens, configurações SMTP, etc.
-  
+
   // Status do canal
   isActive Boolean @default(true)
-  
+
   // Configurações de roteamento
-  autoAssign Boolean @default(false) // Se deve atribuir automaticamente
+  autoAssign         Boolean   @default(false) // Se deve atribuir automaticamente
   assignToEmployeeId String? // ID do funcionário para atribuição automática
-  assignToEmployee Employee? @relation(fields: [assignToEmployeeId], references: [id])
-  
+  assignToEmployee   Employee? @relation(fields: [assignToEmployeeId], references: [id])
+
   // Configurações de IA
-  aiEnabled Boolean @default(false) // Se a IA está habilitada para este canal
+  aiEnabled  Boolean @default(false) // Se a IA está habilitada para este canal
   aiSettings Json? // Configurações específicas da IA
-  
+
   // Relacionamentos
   conversations Conversation[]
-  messages Message[]
-  
+  messages      Message[]
+
   // Campos padrão do sistema
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("communication_channels")
 }
 
 // Conversa omnichannel que agrupa mensagens
 model Conversation {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   title       String // Título da conversa
   description String? // Descrição da conversa
-  
+
   // Canal principal da conversa
   channelId String
   channel   CommunicationChannel @relation(fields: [channelId], references: [id])
-  
+
   // Status da conversa
   status String @default("OPEN") // OPEN, CLOSED, ARCHIVED, etc.
-  
+
   // Entidade relacionada (Cliente, Prospect, etc.)
-  entityId String? // ID da entidade relacionada
+  entityId   String? // ID da entidade relacionada
   entityType String? // CLIENT, PROSPECT, OPPORTUNITY, etc.
-  
+
   // Funcionário responsável
   assignedEmployeeId String?
-  assignedEmployee Employee? @relation(fields: [assignedEmployeeId], references: [id])
-  
+  assignedEmployee   Employee? @relation(fields: [assignedEmployeeId], references: [id])
+
   // Configurações de prioridade
   priority String @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
-  
+
   // Tags para categorização
   tags String[] // Array de tags
-  
+
   // Metadados da conversa
   metadata Json? // Dados adicionais específicos do canal
-  
+
   // Relacionamentos
   messages Message[]
-  
+
   // Campos padrão do sistema
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("conversations")
 }
 
@@ -570,139 +552,406 @@ model Message {
   id          String @id @default(uuid())
   content     String // Conteúdo da mensagem
   contentType String @default("TEXT") // TEXT, IMAGE, AUDIO, VIDEO, DOCUMENT, etc.
-  
+
   // Canal da mensagem
   channelId String
   channel   CommunicationChannel @relation(fields: [channelId], references: [id])
-  
+
   // Conversa à qual a mensagem pertence
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
-  
+
   // Direção da mensagem
   direction String // INBOUND, OUTBOUND
-  
+
   // Status da mensagem
   status String @default("PENDING") // PENDING, SENT, DELIVERED, READ, FAILED, etc.
-  
+
   // Contatos (remetente e destinatário)
-  senderContact String // Email, telefone, etc.
-  senderContactType String // EMAIL, PHONE, WHATSAPP, etc.
-  recipientContact String // Email, telefone, etc.
+  senderContact        String // Email, telefone, etc.
+  senderContactType    String // EMAIL, PHONE, WHATSAPP, etc.
+  recipientContact     String // Email, telefone, etc.
   recipientContactType String // EMAIL, PHONE, WHATSAPP, etc.
-  
+
   // Funcionário relacionado (se aplicável)
   employeeId String?
-  employee Employee? @relation(fields: [employeeId], references: [id])
-  
+  employee   Employee? @relation(fields: [employeeId], references: [id])
+
   // Entidade relacionada
-  entityId String? // ID da entidade relacionada
+  entityId   String? // ID da entidade relacionada
   entityType String? // CLIENT, PROSPECT, OPPORTUNITY, etc.
-  
+
   // Identificador externo (ID da mensagem no provedor)
   externalId String? // ID da mensagem no WhatsApp, email, etc.
-  
+
   // Anexos
   attachments Json? // Array de anexos com URLs e metadados
-  
+
   // Metadados da mensagem
   metadata Json? // Dados adicionais específicos do canal
-  
+
   // Timestamps específicos
-  sentAt DateTime? // Data de envio
+  sentAt      DateTime? // Data de envio
   deliveredAt DateTime? // Data de entrega
-  readAt DateTime? // Data de leitura
-  
+  readAt      DateTime? // Data de leitura
+
   // Processamento de IA
-  aiProcessed Boolean @default(false) // Se foi processada pela IA
+  aiProcessed    Boolean  @default(false) // Se foi processada pela IA
   aiResponseType String? // AUTO_REPLY, SUGGESTED_REPLY, etc.
-  aiConfidence Decimal? @tenantDb.Decimal(3, 2) // Confiança da IA (0-1)
-  aiAnalysis Json? // Análise da IA
-  
+  aiConfidence   Decimal? @tenantDb.Decimal(3, 2) // Confiança da IA (0-1)
+  aiAnalysis     Json? // Análise da IA
+
   // Campos padrão do sistema
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
+  isActive          Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  CampaignRecipient CampaignRecipient[]
+
   @@map("messages")
 }
 
 // Template de mensagem para respostas automáticas
 model MessageTemplate {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String // Nome do template
   description String? // Descrição do template
-  
+
   // Canal para o qual o template é válido
   channelType String // EMAIL, WHATSAPP, SMS, etc.
-  
+
   // Conteúdo do template
   subject String? // Assunto (para email)
   content String // Conteúdo da mensagem
-  
+
   // Variáveis disponíveis no template
   variables String[] // Array de variáveis disponíveis
-  
+
   // Categoria do template
   category String? // GREETING, FOLLOW_UP, CLOSING, etc.
-  
+
   // Status do template
   isActive Boolean @default(true)
-  
+
   // Campos padrão do sistema
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("message_templates")
 }
 
 // Regras de roteamento automático
 model RoutingRule {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String // Nome da regra
   description String? // Descrição da regra
-  
+
   // Condições da regra
   conditions Json // Condições para aplicar a regra
-  
+
   // Ações da regra
   actions Json // Ações a serem executadas
-  
+
   // Prioridade da regra
   priority Int @default(0) // Maior número = maior prioridade
-  
+
   // Status da regra
   isActive Boolean @default(true)
-  
+
   // Campos padrão do sistema
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("routing_rules")
+}
+
+// ===== MÓDULO DE AUTOMAÇÃO E MARKETING =====
+
+// Campanha de marketing
+model MarketingCampaign {
+  id          String  @id @default(uuid())
+  name        String // Nome da campanha
+  description String? // Descrição da campanha
+
+  // Tipo e categoria
+  campaignType String // EMAIL, SMS, WHATSAPP, MULTI_CHANNEL
+  category     String? // PROMOTIONAL, EDUCATIONAL, FOLLOW_UP, WELCOME, etc.
+
+  // Configurações da campanha
+  subject    String? // Assunto (para email)
+  content    String // Conteúdo da mensagem
+  templateId String? // ID do template usado
+
+  // Segmentação
+  targetAudience Json? // Critérios de segmentação (JSON)
+  targetLeads    String[] // IDs dos leads específicos (se aplicável)
+  targetClients  String[] // IDs dos clientes específicos (se aplicável)
+
+  // Agendamento
+  scheduledAt DateTime? // Data/hora agendada para envio
+  timezone    String    @default("America/Sao_Paulo") // Fuso horário
+
+  // Status e controle
+  status   String @default("DRAFT") // DRAFT, SCHEDULED, RUNNING, PAUSED, COMPLETED, CANCELLED
+  priority String @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+
+  // Configurações de envio
+  sendLimit Int? // Limite de envios por hora/dia
+  batchSize Int  @default(100) // Tamanho do lote de envio
+
+  // Relacionamentos
+  createdByEmployeeId String
+  createdByEmployee   Employee @relation(fields: [createdByEmployeeId], references: [id])
+
+  // Execuções da campanha
+  campaignExecutions CampaignExecution[]
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("marketing_campaigns")
+}
+
+// Execução de campanha (histórico de disparos)
+model CampaignExecution {
+  id String @id @default(uuid())
+
+  // Relacionamento com campanha
+  campaignId String
+  campaign   MarketingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  // Dados da execução
+  executionDate DateTime @default(now()) // Data/hora da execução
+  status        String   @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED, CANCELLED
+
+  // Estatísticas
+  totalRecipients   Int @default(0) // Total de destinatários
+  sentCount         Int @default(0) // Mensagens enviadas
+  deliveredCount    Int @default(0) // Mensagens entregues
+  openedCount       Int @default(0) // Mensagens abertas (email)
+  clickedCount      Int @default(0) // Cliques em links
+  repliedCount      Int @default(0) // Respostas recebidas
+  bouncedCount      Int @default(0) // Mensagens retornadas
+  unsubscribedCount Int @default(0) // Descadastros
+
+  // Detalhes da execução
+  startedAt    DateTime? // Início da execução
+  completedAt  DateTime? // Fim da execução
+  errorMessage String? // Mensagem de erro (se houver)
+
+  // Relacionamentos
+  campaignRecipients CampaignRecipient[]
+  campaignReport     CampaignReport?
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("campaign_executions")
+}
+
+// Destinatário de campanha
+model CampaignRecipient {
+  id String @id @default(uuid())
+
+  // Relacionamentos
+  executionId String
+  execution   CampaignExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  // Dados do destinatário
+  recipientType  String // LEAD, CLIENT, CUSTOM
+  recipientId    String? // ID do lead ou cliente
+  recipientName  String // Nome do destinatário
+  recipientEmail String? // Email do destinatário
+  recipientPhone String? // Telefone do destinatário
+
+  // Status do envio
+  status String @default("PENDING") // PENDING, SENT, DELIVERED, OPENED, CLICKED, REPLIED, BOUNCED, UNSUBSCRIBED, FAILED
+
+  // Timestamps específicos
+  sentAt         DateTime? // Data de envio
+  deliveredAt    DateTime? // Data de entrega
+  openedAt       DateTime? // Data de abertura
+  clickedAt      DateTime? // Data do clique
+  repliedAt      DateTime? // Data da resposta
+  bouncedAt      DateTime? // Data do bounce
+  unsubscribedAt DateTime? // Data do descadastro
+
+  // Dados adicionais
+  errorMessage String? // Mensagem de erro (se houver)
+  metadata     Json? // Dados adicionais específicos
+
+  // Relacionamento com mensagem (se aplicável)
+  messageId String?
+  message   Message? @relation(fields: [messageId], references: [id])
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("campaign_recipients")
+}
+
+// Automação de marketing (workflows)
+model MarketingAutomation {
+  id          String  @id @default(uuid())
+  name        String // Nome da automação
+  description String? // Descrição da automação
+
+  // Tipo de automação
+  automationType String // LEAD_NURTURING, WELCOME_SERIES, FOLLOW_UP, ABANDONED_CART, etc.
+
+  // Configurações
+  triggerConditions Json // Condições que disparam a automação
+  workflowSteps     Json // Passos do workflow (JSON)
+
+  // Status
+  status String @default("DRAFT") // DRAFT, ACTIVE, PAUSED, COMPLETED
+
+  // Relacionamentos
+  createdByEmployeeId String
+  createdByEmployee   Employee @relation(fields: [createdByEmployeeId], references: [id])
+
+  // Execuções da automação
+  automationExecutions AutomationExecution[]
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("marketing_automations")
+}
+
+// Execução de automação
+model AutomationExecution {
+  id String @id @default(uuid())
+
+  // Relacionamento com automação
+  automationId String
+  automation   MarketingAutomation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  // Dados da execução
+  executionDate DateTime @default(now())
+  status        String   @default("RUNNING") // RUNNING, COMPLETED, FAILED, CANCELLED
+
+  // Entidade que disparou a automação
+  triggerEntityType String // LEAD, CLIENT, INTERACTION, etc.
+  triggerEntityId   String // ID da entidade
+
+  // Detalhes da execução
+  currentStep    Int @default(0) // Passo atual
+  totalSteps     Int @default(0) // Total de passos
+  completedSteps Int @default(0) // Passos completados
+
+  // Timestamps
+  startedAt   DateTime? // Início da execução
+  completedAt DateTime? // Fim da execução
+  nextStepAt  DateTime? // Próximo passo agendado
+
+  // Dados adicionais
+  errorMessage String? // Mensagem de erro (se houver)
+  metadata     Json? // Dados adicionais específicos
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("automation_executions")
+}
+
+// Template de campanha
+model CampaignTemplate {
+  id          String  @id @default(uuid())
+  name        String // Nome do template
+  description String? // Descrição do template
+
+  // Tipo e categoria
+  templateType String // EMAIL, SMS, WHATSAPP
+  category     String? // PROMOTIONAL, EDUCATIONAL, FOLLOW_UP, etc.
+
+  // Conteúdo do template
+  subject String? // Assunto (para email)
+  content String // Conteúdo da mensagem
+
+  // Variáveis disponíveis
+  variables String[] // Array de variáveis disponíveis (ex: {{name}}, {{email}})
+
+  // Configurações
+  isActive Boolean @default(true)
+
+  // Relacionamentos
+  createdByEmployeeId String
+  createdByEmployee   Employee @relation(fields: [createdByEmployeeId], references: [id])
+
+  // Campos padrão do sistema
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("campaign_templates")
+}
+
+// Relatório de campanha
+model CampaignReport {
+  id String @id @default(uuid())
+
+  // Relacionamento com execução
+  executionId String            @unique
+  execution   CampaignExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  // Métricas gerais
+  deliveryRate    Decimal @default(0) @tenantDb.Decimal(5, 2) // Taxa de entrega (%)
+  openRate        Decimal @default(0) @tenantDb.Decimal(5, 2) // Taxa de abertura (%)
+  clickRate       Decimal @default(0) @tenantDb.Decimal(5, 2) // Taxa de clique (%)
+  replyRate       Decimal @default(0) @tenantDb.Decimal(5, 2) // Taxa de resposta (%)
+  bounceRate      Decimal @default(0) @tenantDb.Decimal(5, 2) // Taxa de bounce (%)
+  unsubscribeRate Decimal @default(0) @tenantDb.Decimal(5, 2) // Taxa de descadastro (%)
+
+  // Métricas de engajamento
+  totalEngagement   Int      @default(0) // Total de engajamentos
+  avgEngagementTime Decimal? @tenantDb.Decimal(8, 2) // Tempo médio de engajamento
+
+  // Análise temporal
+  peakEngagementHour Int? // Hora de maior engajamento
+  peakEngagementDay  String? // Dia de maior engajamento
+
+  // Dados demográficos (se disponível)
+  demographics Json? // Análise demográfica dos destinatários
+
+  // Campos padrão do sistema
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("campaign_reports")
 }
 
 // Histórico de interações automáticas (para LGPD)
 model CommunicationLog {
-  id          String @id @default(uuid())
-  
+  id String @id @default(uuid())
+
   // Tipo de ação
   actionType String // SENT, RECEIVED, PROCESSED, DELETED, etc.
-  
+
   // Dados da ação
   entityType String // MESSAGE, CONVERSATION, CHANNEL
-  entityId String // ID da entidade
-  
+  entityId   String // ID da entidade
+
   // Dados sensíveis processados
   processedData Json? // Dados que foram processados
-  
+
   // Motivo da ação
   reason String? // Motivo da ação (para auditoria)
-  
+
   // Usuário que executou a ação
   executedBy String? // ID do usuário
-  
+
   // Campos padrão do sistema
   createdAt DateTime @default(now())
-  
+
   @@map("communication_logs")
 }

@@ -20,6 +20,8 @@ import { ConversationController } from "./controllers/communication/conversation
 import { MessageController } from "./controllers/communication/message.controller";
 import { CommunicationStatsController } from "./controllers/communication/communication-stats.controller";
 import { SolutionController } from "./controllers/solutions/solution.controller";
+import { MarketingCampaignController } from "./controllers/automation/marketing-campaign.controller";
+import { CampaignTemplateController } from "./controllers/automation/campaign-template.controller";
 
 @Module({
     imports: [
@@ -48,6 +50,8 @@ import { SolutionController } from "./controllers/solutions/solution.controller"
     ConversationController,
     MessageController,
     CommunicationStatsController,
+    MarketingCampaignController,
+    CampaignTemplateController,
   ]
 })
 export class ApiModule { }

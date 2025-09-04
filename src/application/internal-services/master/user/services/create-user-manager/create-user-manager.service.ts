@@ -144,7 +144,10 @@ export class CreateUserManagerService extends HandlerBase<CreateUserManagerReque
         if (!requestToken || !refreshToken) throw new BaseException("Internal auth error", 500);
 
 
-        await this.createEmployeeService.execute(request.employee, data);
+        this.logger.debug(`user: ${user!.id}`);
+        const tenantClient = await this.tenantServiceInjected.getTenantClient(user!.tenantId);
+        await this.createEmployeeService.execute(request.employee, { user, tenantClient });
+        this.logger.debug(`user: ${user!.tenantId}`);
 
 
         return new UserVm(user, requestToken, refreshToken);
@@ -163,7 +166,7 @@ export class CreateUserManagerService extends HandlerBase<CreateUserManagerReque
             this.setContext(context);
 
             // Executar uma query simples para forçar aplicação do schema
-            await this.context.$executeRaw`SELECT 1`; 
+            await this.context.$executeRaw`SELECT 1`;
 
             this.logger.debug(`✅ Schema aplicado e context configurado para tenant: ${tenantId}`);
         } catch (error) {

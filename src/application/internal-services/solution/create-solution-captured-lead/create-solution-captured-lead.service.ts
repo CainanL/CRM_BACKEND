@@ -27,7 +27,7 @@ export class CreateSolutionCapturedLeadService extends HandlerBase<CreateSolutio
                     settingsId: fieldValue.settingsId,
                     isActive: true
                 }));
-
+                
                 await tx.solutionFieldValue.createMany({
                     data: fieldValuesData
                 });

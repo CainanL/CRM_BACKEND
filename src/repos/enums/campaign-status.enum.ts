@@ -1,0 +1,10 @@
+export enum CampaignStatus {
+  DRAFT = "DRAFT",
+  SCHEDULED = "SCHEDULED",
+  RUNNING = "RUNNING",
+  PAUSED = "PAUSED",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+  FAILED = "FAILED",
+  ACTIVE = "ACTIVE"
+}

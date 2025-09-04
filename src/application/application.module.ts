@@ -21,6 +21,7 @@ import { ClientInteractionModule } from "./internal-services/client-interaction/
 import { PipelineModule } from "./internal-services/pipeline/pipeline.module";
 import { AgendaModule } from "./internal-services/agenda/agenda.module";
 import { CommunicationModule } from "./internal-services/communication/communication.module";
+import { AutomationModule } from "./internal-services/automation/automation.module";
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { CommunicationModule } from "./internal-services/communication/communica
     ClientInteractionModule,
     PipelineModule,
     AgendaModule,
-    CommunicationModule
+    CommunicationModule,
+    AutomationModule
   ],
   providers: [
     // EmailService,
@@ -60,7 +62,8 @@ import { CommunicationModule } from "./internal-services/communication/communica
     ClientInteractionModule,
     PipelineModule,
     AgendaModule,
-    CommunicationModule
+    CommunicationModule,
+    AutomationModule
   ],
 })
 export class ApplicationModule { }

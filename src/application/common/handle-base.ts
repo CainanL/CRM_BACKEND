@@ -10,7 +10,7 @@ export interface IRequestWithTenant {
 }
 
 type UserWithRelations = Prisma.UserGetPayload<{
-    include: { 
+    include: {
         UserPolicyRule: {
             include: {
                 policy: true,
@@ -54,7 +54,7 @@ export abstract class HandlerBase<TRequest, TResponse> implements IHandlerBase<T
 
 
     constructor(
-        protected readonly _tenantService?: TenantService,
+        protected _tenantService?: TenantService,
         logger?: Logger) {
         this.logger = logger || new Logger(this.constructor.name);;
     }
@@ -62,6 +62,7 @@ export abstract class HandlerBase<TRequest, TResponse> implements IHandlerBase<T
 
     public async execute(request: TRequest, data?: unknown | any): Promise<ApiResponse<TResponse>> {
         if (data?.user) this._user = data.user;
+        if (data?.tenantClient) this._dbClient = data.tenantClient;
         try {
             const tenantId = this.extractTenantId(request, data);
             if (tenantId)
@@ -96,6 +97,10 @@ export abstract class HandlerBase<TRequest, TResponse> implements IHandlerBase<T
         this._tenantId = tenantId || null;
         if (tenantId && this._tenantService)
             this._dbClient = await this._tenantService.getTenantClient(tenantId);
+    }
+
+    public async forceInitializeContext(tenantClient: TenantClient): Promise<void> {
+        this._dbClient = tenantClient;
     }
 
     /**

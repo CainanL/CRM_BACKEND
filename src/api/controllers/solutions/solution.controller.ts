@@ -27,6 +27,8 @@ import { GetSolutionFieldSettingsRequest } from "src/application/internal-servic
 import { GetSolutionFieldSettingsService } from "src/application/internal-services/solution/get-solution-field-settings/get-solution-field-settings.service";
 import { CreateSolutionCapturedLeadRequest } from "src/application/internal-services/solution/create-solution-captured-lead/create-solution-captured-lead.request";
 import { CreateSolutionCapturedLeadService } from "src/application/internal-services/solution/create-solution-captured-lead/create-solution-captured-lead.service";
+import { QueryRecentLeadsRequest } from "src/application/internal-services/solution/query-recent-leads/query-recent-leads.request";
+import { QueryRecentLeadsService } from "src/application/internal-services/solution/query-recent-leads/query-recent-leads.service";
 import { Policies } from "src/repos/enums/polices.enum";
 import { Rules } from "src/repos/enums/rules.enum";
 
@@ -44,7 +46,8 @@ export class SolutionController {
         private readonly queryLeadsService: QueryLeadsService,
         private readonly getSolutionFieldValuesService: GetSolutionFieldValuesService,
         private readonly getSolutionFieldSettingsService: GetSolutionFieldSettingsService,
-        private readonly createSolutionCapturedLeadService: CreateSolutionCapturedLeadService
+        private readonly createSolutionCapturedLeadService: CreateSolutionCapturedLeadService,
+        private readonly queryRecentLeadsService: QueryRecentLeadsService
     ) { }
 
     @Post()
@@ -120,6 +123,13 @@ export class SolutionController {
     @UseGuards(AuthGuard, PoliciesRolesGuard)
     async getLeadsById(@Query() param: QueryLeadsRequest, @Request() req) {
         return await this.queryLeadsService.execute(param, req);
+    }
+
+    @Get("/recent-leads")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_LIST])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async getRecentLeads(@Query() param: QueryRecentLeadsRequest, @Request() req) {
+        return await this.queryRecentLeadsService.execute(param, req);
     }
 
     @Get("/:id")
