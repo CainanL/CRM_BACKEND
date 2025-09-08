@@ -29,6 +29,8 @@ import { CreateSolutionCapturedLeadRequest } from "src/application/internal-serv
 import { CreateSolutionCapturedLeadService } from "src/application/internal-services/solution/create-solution-captured-lead/create-solution-captured-lead.service";
 import { QueryRecentLeadsRequest } from "src/application/internal-services/solution/query-recent-leads/query-recent-leads.request";
 import { QueryRecentLeadsService } from "src/application/internal-services/solution/query-recent-leads/query-recent-leads.service";
+import { GetSolutionStatsRequest } from "src/application/internal-services/solution/get-solution-stats/get-solution-stats.request";
+import { GetSolutionStatsService } from "src/application/internal-services/solution/get-solution-stats/get-solution-stats.service";
 import { Policies } from "src/repos/enums/polices.enum";
 import { Rules } from "src/repos/enums/rules.enum";
 
@@ -47,7 +49,8 @@ export class SolutionController {
         private readonly getSolutionFieldValuesService: GetSolutionFieldValuesService,
         private readonly getSolutionFieldSettingsService: GetSolutionFieldSettingsService,
         private readonly createSolutionCapturedLeadService: CreateSolutionCapturedLeadService,
-        private readonly queryRecentLeadsService: QueryRecentLeadsService
+        private readonly queryRecentLeadsService: QueryRecentLeadsService,
+        private readonly getSolutionStatsService: GetSolutionStatsService
     ) { }
 
     @Post()
@@ -69,7 +72,7 @@ export class SolutionController {
         return await this.addSolutionPriceService.execute(body, req);
     }
 
-    @Delete("/reove-price/:id")
+    @Delete("/remove-price/:id")
     @PolicyRole([Policies.ADMIN], [Rules.CAN_DELETE])
     @UseGuards(AuthGuard, PoliciesRolesGuard)
     async removeSolutionPrice(@Param() body: RemoveSolutionPriceRequest, @Request() req) {
@@ -137,5 +140,12 @@ export class SolutionController {
     @UseGuards(AuthGuard, PoliciesRolesGuard)
     async getSolutionById(@Param() param: GetSolutionByIdRequest, @Request() req) {
         return await this.getSolutionByIdService.execute(param, req);
+    }
+
+    @Get("/:id/stats")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_VIEW])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async getSolutionStats(@Param() param: GetSolutionStatsRequest, @Request() req) {
+        return await this.getSolutionStatsService.execute(param, req);
     }
 }
