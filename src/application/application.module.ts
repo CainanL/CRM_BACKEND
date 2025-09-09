@@ -24,6 +24,7 @@ import { CommunicationModule } from "./internal-services/communication/communica
 import { AutomationModule } from "./internal-services/automation/automation.module";
 import { MigrationModule } from "./internal-services/master/migration/migration.module";
 import { MigrationInitializer } from "./initializers/migration.initializer";
+import { EnumModule } from "./internal-services/master/enum/enum.module";
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { MigrationInitializer } from "./initializers/migration.initializer";
     AgendaModule,
     CommunicationModule,
     AutomationModule,
-    MigrationModule
+    MigrationModule,
+    EnumModule
   ],
   providers: [
     // EmailService,
@@ -68,7 +70,8 @@ import { MigrationInitializer } from "./initializers/migration.initializer";
     AgendaModule,
     CommunicationModule,
     AutomationModule,
-    MigrationModule
+    MigrationModule,
+    EnumModule
   ],
 })
 export class ApplicationModule { }
