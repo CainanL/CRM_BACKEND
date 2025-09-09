@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiTenant } from 'src/api/decorators/tenant.decorator';
 import { ActivityStatus } from 'src/repos/enums/activity-status.enum';
 import { ActivityType } from 'src/repos/enums/activity-type.enum';
 import { AiResponseType } from 'src/repos/enums/ai-response-type.enum';
@@ -34,6 +35,7 @@ import { RecipientType } from 'src/repos/enums/recipient-type.enum';
 import { Rules } from 'src/repos/enums/rules.enum';
 
 @Controller('enums')
+@ApiTenant()
 export class EnumsController {
   
   @Get('/activity-status')

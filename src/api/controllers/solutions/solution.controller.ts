@@ -31,6 +31,8 @@ import { QueryRecentLeadsRequest } from "src/application/internal-services/solut
 import { QueryRecentLeadsService } from "src/application/internal-services/solution/query-recent-leads/query-recent-leads.service";
 import { GetSolutionStatsRequest } from "src/application/internal-services/solution/get-solution-stats/get-solution-stats.request";
 import { GetSolutionStatsService } from "src/application/internal-services/solution/get-solution-stats/get-solution-stats.service";
+import { DeleteSolutionFieldSettingRequest } from "src/application/internal-services/solution/delete-solution-field-setting/delete-solution-field-setting.request";
+import { DeleteSolutionFieldSettingService } from "src/application/internal-services/solution/delete-solution-field-setting/delete-solution-field-setting.service";
 import { Policies } from "src/repos/enums/polices.enum";
 import { Rules } from "src/repos/enums/rules.enum";
 
@@ -50,7 +52,8 @@ export class SolutionController {
         private readonly getSolutionFieldSettingsService: GetSolutionFieldSettingsService,
         private readonly createSolutionCapturedLeadService: CreateSolutionCapturedLeadService,
         private readonly queryRecentLeadsService: QueryRecentLeadsService,
-        private readonly getSolutionStatsService: GetSolutionStatsService
+        private readonly getSolutionStatsService: GetSolutionStatsService,
+        private readonly deleteSolutionFieldSettingService: DeleteSolutionFieldSettingService
     ) { }
 
     @Post()
@@ -98,6 +101,13 @@ export class SolutionController {
     @UseGuards(AuthGuard, PoliciesRolesGuard)
     async createSolutionFieldSettings(@Body() body: CreateSolutionFieldSettingsRequest, @Request() req) {
         return await this.createSolutionFieldSettingsService.execute(body, req);
+    }
+
+    @Delete("/solution-field-settings/:id")
+    @PolicyRole([Policies.ADMIN], [Rules.CAN_DELETE])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async deleteSolutionFieldSetting(@Param() param: DeleteSolutionFieldSettingRequest, @Request() req) {
+        return await this.deleteSolutionFieldSettingService.execute(param, req);
     }    
 
     @Get("/field-values/:solutionId")

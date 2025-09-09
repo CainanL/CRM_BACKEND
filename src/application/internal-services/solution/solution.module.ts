@@ -13,6 +13,7 @@ import { GetSolutionFieldSettingsService } from "./get-solution-field-settings/g
 import { CreateSolutionCapturedLeadService } from "./create-solution-captured-lead/create-solution-captured-lead.service";
 import { QueryRecentLeadsService } from "./query-recent-leads/query-recent-leads.service";
 import { GetSolutionStatsService } from "./get-solution-stats/get-solution-stats.service";
+import { DeleteSolutionFieldSettingService } from "./delete-solution-field-setting/delete-solution-field-setting.service";
 
 @Module({
     providers: [
@@ -29,7 +30,8 @@ import { GetSolutionStatsService } from "./get-solution-stats/get-solution-stats
         GetSolutionFieldSettingsService,
         CreateSolutionCapturedLeadService,
         QueryRecentLeadsService,
-        GetSolutionStatsService
+        GetSolutionStatsService,
+        DeleteSolutionFieldSettingService
     ],
     exports: [
         QuerySolutionService,
@@ -45,7 +47,8 @@ import { GetSolutionStatsService } from "./get-solution-stats/get-solution-stats
         GetSolutionFieldSettingsService,
         CreateSolutionCapturedLeadService,
         QueryRecentLeadsService,
-        GetSolutionStatsService
+        GetSolutionStatsService,
+        DeleteSolutionFieldSettingService
     ]
 })
 export class SolutionModule { }

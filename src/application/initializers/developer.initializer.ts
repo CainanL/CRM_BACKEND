@@ -11,7 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { Policies } from "src/repos/enums/polices.enum";
 import { BaseException } from "../common/exceptions/base-exception";
 import { Rules } from "src/repos/enums/rules.enum";
-import { User } from "generated/prisma";
+import { User } from ".prisma/master-client";
 import { HandlerBase } from "../common/handle-base";
 
 @Injectable()
@@ -43,15 +43,34 @@ export class DeveloperInitializer extends HandlerBase<null, null> implements OnA
             }
         });
 
-        const policy = await this.policyRepository.findFirst({
+        // Criar a política DEVELOPER se não existir
+        let policy = await this.policyRepository.findFirst({
             name: Policies.DEVELOPER.toString()
         });
-        if (!policy) throw new BaseException("Policy ADMIN not Foud", 500);
+        if (!policy) {
+            policy = await this.policyRepository.create({
+                name: Policies.DEVELOPER.toString(),
+            });
+        }
 
+        // Criar as regras se não existirem
         const rules = await this.ruleRepository.findMany({
             OR: Object.values(Rules).map(name => ({ name }))
         });
-        if (!rules.length) throw new BaseException("No rules found", 500);
+        
+        if (!rules.length) {
+            // Criar todas as regras
+            for (const ruleName of Object.values(Rules)) {
+                await this.ruleRepository.create({
+                    name: ruleName,
+                });
+            }
+            // Buscar as regras novamente
+            const newRules = await this.ruleRepository.findMany({
+                OR: Object.values(Rules).map(name => ({ name }))
+            });
+            if (!newRules.length) throw new BaseException("No rules found", 500);
+        }
 
         const rulesObject = Object.values(Rules);
 
