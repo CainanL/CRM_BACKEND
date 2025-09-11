@@ -1,43 +1,98 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray, IsDateString, IsInt, Min, Max, IsObject, ValidateNested } from "class-validator";
+import { IsString, IsNotEmpty, IsOptional, IsEnum, IsArray, IsDateString, IsInt, Min, Max, IsObject, ValidateNested, IsBoolean } from "class-validator";
 import { Type } from "class-transformer";
 import { CampaignType } from "src/repos/enums/campaign-type.enum";
 import { CampaignCategory } from "src/repos/enums/campaign-category.enum";
 import { CampaignStatus } from "src/repos/enums/campaign-status.enum";
 
+class AgeRangeRequest {
+  @ApiPropertyOptional({ example: 18, description: "Idade mínima" })
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  min?: number;
+
+  @ApiPropertyOptional({ example: 65, description: "Idade máxima" })
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  max?: number;
+}
+
+class LocationRequest {
+  @ApiPropertyOptional({ example: ["SP", "RJ", "MG"], description: "Lista de estados" })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  states?: string[];
+
+  @ApiPropertyOptional({ example: ["São Paulo", "Rio de Janeiro"], description: "Lista de cidades" })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  cities?: string[];
+}
+
+class BehaviorRequest {
+  @ApiPropertyOptional({ example: 30, description: "Dias desde a última interação" })
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  lastInteractionDays?: number;
+
+  @ApiPropertyOptional({ example: true, description: "Se o cliente abriu emails anteriormente" })
+  @IsBoolean()
+  @IsOptional()
+  hasOpenedEmails?: boolean;
+
+  @ApiPropertyOptional({ example: false, description: "Se o cliente clicou em links anteriormente" })
+  @IsBoolean()
+  @IsOptional()
+  hasClickedLinks?: boolean;
+}
+
+class SolutionRequest {
+
+  @ApiPropertyOptional({ example: ["sol-123", "sol-456"], description: "Lista de IDs das soluções" })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  solutionIds?: string[];
+
+  @ApiPropertyOptional({ example: true, description: "Se o cliente tem interesse em soluções" })
+  @IsBoolean()
+  @IsOptional()
+  hasInterestedSolutions?: boolean;
+}
+
 export class TargetAudienceRequest {
   @ApiPropertyOptional({ description: "Critérios de segmentação por idade" })
   @IsOptional()
   @IsObject()
-  ageRange?: {
-    min?: number;
-    max?: number;
-  };
+  @ValidateNested()
+  @Type(() => AgeRangeRequest)
+  ageRange: AgeRangeRequest;
 
   @ApiPropertyOptional({ description: "Critérios de segmentação por localização" })
   @IsOptional()
   @IsObject()
-  location?: {
-    states?: string[];
-    cities?: string[];
-  };
+  @ValidateNested()
+  @Type(() => LocationRequest)
+  location?: LocationRequest
 
   @ApiPropertyOptional({ description: "Critérios de segmentação por comportamento" })
   @IsOptional()
   @IsObject()
-  behavior?: {
-    lastInteractionDays?: number;
-    hasOpenedEmails?: boolean;
-    hasClickedLinks?: boolean;
-  };
+  @ValidateNested()
+  @Type(() => BehaviorRequest)
+  behavior?: BehaviorRequest;
 
   @ApiPropertyOptional({ description: "Critérios de segmentação por solução" })
   @IsOptional()
   @IsObject()
-  solution?: {
-    solutionIds?: string[];
-    hasInterestedSolutions?: boolean;
-  };
+  @ValidateNested()
+  @Type(() => SolutionRequest)
+  solution?: SolutionRequest;
 }
 
 export class CreateMarketingCampaignRequest {

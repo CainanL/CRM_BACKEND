@@ -40,44 +40,44 @@ export class GetEnumsService extends HandlerBase<null, { [key: string]: EnumItem
     
     protected async executeCore(request: null, data?: any): Promise<{ [key: string]: EnumItemVm[] }> {
         return {
-            activityStatus: this.getEnumItems(ActivityStatus, this.getActivityStatusTranslation),
-            activityType: this.getEnumItems(ActivityType, this.getActivityTypeTranslation),
-            aiResponseType: this.getEnumItems(AiResponseType, this.getAiResponseTypeTranslation),
-            automationType: this.getEnumItems(AutomationType, this.getAutomationTypeTranslation),
-            calendarProvider: this.getEnumItems(CalendarProvider, this.getCalendarProviderTranslation),
-            campaignCategory: this.getEnumItems(CampaignCategory, this.getCampaignCategoryTranslation),
-            campaignStatus: this.getEnumItems(CampaignStatus, this.getCampaignStatusTranslation),
-            campaignType: this.getEnumItems(CampaignType, this.getCampaignTypeTranslation),
-            clientStatus: this.getEnumItems(ClientStatus, this.getClientStatusTranslation),
-            clientType: this.getEnumItems(ClientType, this.getClientTypeTranslation),
-            communicationChannel: this.getEnumItems(CommunicationChannel, this.getCommunicationChannelTranslation),
-            contactType: this.getEnumItems(ContactType, this.getContactTypeTranslation),
-            contentType: this.getEnumItems(ContentType, this.getContentTypeTranslation),
-            contractType: this.getEnumItems(ContractType, this.getContractTypeTranslation),
-            conversationStatus: this.getEnumItems(ConversationStatus, this.getConversationStatusTranslation),
-            employeeStatus: this.getEnumItems(EmployeeStatus, this.getEmployeeStatusTranslation),
-            entityType: this.getEnumItems(EntityType, this.getEntityTypeTranslation),
-            gender: this.getEnumItems(Gender, this.getGenderTranslation),
-            interactionStatus: this.getEnumItems(InteractionStatus, this.getInteractionStatusTranslation),
-            interactionTag: this.getEnumItems(InteractionTag, this.getInteractionTagTranslation),
-            interactionType: this.getEnumItems(InteractionType, this.getInteractionTypeTranslation),
-            leadStatus: this.getEnumItems(LeadStatus, this.getLeadStatusTranslation),
-            messageDirection: this.getEnumItems(MessageDirection, this.getMessageDirectionTranslation),
-            messagePriority: this.getEnumItems(MessagePriority, this.getMessagePriorityTranslation),
-            messageStatus: this.getEnumItems(MessageStatus, this.getMessageStatusTranslation),
-            notificationType: this.getEnumItems(NotificationType, this.getNotificationTypeTranslation),
-            opportunityCloseReason: this.getEnumItems(OpportunityCloseReason, this.getOpportunityCloseReasonTranslation),
-            opportunityStatus: this.getEnumItems(OpportunityStatus, this.getOpportunityStatusTranslation),
-            policies: this.getEnumItems(Policies, this.getPolicesTranslation),
-            priority: this.getEnumItems(Priority, this.getPriorityTranslation),
-            recipientStatus: this.getEnumItems(RecipientStatus, this.getRecipientStatusTranslation),
-            recipientType: this.getEnumItems(RecipientType, this.getRecipientTypeTranslation),
-            rules: this.getEnumItems(Rules, this.getRulesTranslation)
+            activityStatus: this.getEnumItems(ActivityStatus, this.getActivityStatusTranslation, this.getActivityStatusColor),
+            activityType: this.getEnumItems(ActivityType, this.getActivityTypeTranslation, this.getActivityTypeColor),
+            aiResponseType: this.getEnumItems(AiResponseType, this.getAiResponseTypeTranslation, this.getAiResponseTypeColor),
+            automationType: this.getEnumItems(AutomationType, this.getAutomationTypeTranslation, this.getAutomationTypeColor),
+            calendarProvider: this.getEnumItems(CalendarProvider, this.getCalendarProviderTranslation, this.getCalendarProviderColor),
+            campaignCategory: this.getEnumItems(CampaignCategory, this.getCampaignCategoryTranslation, this.getCampaignCategoryColor),
+            campaignStatus: this.getEnumItems(CampaignStatus, this.getCampaignStatusTranslation, this.getCampaignStatusColor),
+            campaignType: this.getEnumItems(CampaignType, this.getCampaignTypeTranslation, this.getCampaignTypeColor),
+            clientStatus: this.getEnumItems(ClientStatus, this.getClientStatusTranslation, this.getClientStatusColor),
+            clientType: this.getEnumItems(ClientType, this.getClientTypeTranslation, this.getClientTypeColor),
+            communicationChannel: this.getEnumItems(CommunicationChannel, this.getCommunicationChannelTranslation, this.getCommunicationChannelColor),
+            contactType: this.getEnumItems(ContactType, this.getContactTypeTranslation, this.getContactTypeColor),
+            contentType: this.getEnumItems(ContentType, this.getContentTypeTranslation, this.getContentTypeColor),
+            contractType: this.getEnumItems(ContractType, this.getContractTypeTranslation, this.getContractTypeColor),
+            conversationStatus: this.getEnumItems(ConversationStatus, this.getConversationStatusTranslation, this.getConversationStatusColor),
+            employeeStatus: this.getEnumItems(EmployeeStatus, this.getEmployeeStatusTranslation, this.getEmployeeStatusColor),
+            entityType: this.getEnumItems(EntityType, this.getEntityTypeTranslation, this.getEntityTypeColor),
+            gender: this.getEnumItems(Gender, this.getGenderTranslation, this.getGenderColor),
+            interactionStatus: this.getEnumItems(InteractionStatus, this.getInteractionStatusTranslation, this.getInteractionStatusColor),
+            interactionTag: this.getEnumItems(InteractionTag, this.getInteractionTagTranslation, this.getInteractionTagColor),
+            interactionType: this.getEnumItems(InteractionType, this.getInteractionTypeTranslation, this.getInteractionTypeColor),
+            leadStatus: this.getEnumItems(LeadStatus, this.getLeadStatusTranslation, this.getLeadStatusColor),
+            messageDirection: this.getEnumItems(MessageDirection, this.getMessageDirectionTranslation, this.getMessageDirectionColor),
+            messagePriority: this.getEnumItems(MessagePriority, this.getMessagePriorityTranslation, this.getMessagePriorityColor),
+            messageStatus: this.getEnumItems(MessageStatus, this.getMessageStatusTranslation, this.getMessageStatusColor),
+            notificationType: this.getEnumItems(NotificationType, this.getNotificationTypeTranslation, this.getNotificationTypeColor),
+            opportunityCloseReason: this.getEnumItems(OpportunityCloseReason, this.getOpportunityCloseReasonTranslation, this.getOpportunityCloseReasonColor),
+            opportunityStatus: this.getEnumItems(OpportunityStatus, this.getOpportunityStatusTranslation, this.getOpportunityStatusColor),
+            policies: this.getEnumItems(Policies, this.getPolicesTranslation, this.getPolicesColor),
+            priority: this.getEnumItems(Priority, this.getPriorityTranslation, this.getPriorityColor),
+            recipientStatus: this.getEnumItems(RecipientStatus, this.getRecipientStatusTranslation, this.getRecipientStatusColor),
+            recipientType: this.getEnumItems(RecipientType, this.getRecipientTypeTranslation, this.getRecipientTypeColor),
+            rules: this.getEnumItems(Rules, this.getRulesTranslation, this.getRulesColor)
         };
     }
 
-    private getEnumItems(enumObject: any, translationFunction: (value: string) => string): EnumItemVm[] {
-        return Object.values(enumObject).map((value: string) => new EnumItemVm(value, translationFunction(value)));
+    private getEnumItems(enumObject: any, translationFunction: (value: string) => string, colorFunction: (value: string) => string): EnumItemVm[] {
+        return Object.values(enumObject).map((value: string) => new EnumItemVm(value, translationFunction(value), colorFunction(value)));
     }
 
     // Translation methods
@@ -459,5 +459,386 @@ export class GetEnumsService extends HandlerBase<null, { [key: string]: EnumItem
             'EXECUTE': 'Executar'
         };
         return translations[value] || value;
+    }
+
+    // Color methods - Cores semânticas para cada enum
+    private getActivityStatusColor(value: string): string {
+        const colors = {
+            'PENDING': '#FFA500',      // Laranja - Aguardando
+            'IN_PROGRESS': '#2196F3',  // Azul - Em andamento
+            'COMPLETED': '#4CAF50',    // Verde - Concluído
+            'OVERDUE': '#F44336',      // Vermelho - Atrasado
+            'CANCELLED': '#9E9E9E'     // Cinza - Cancelado
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getActivityTypeColor(value: string): string {
+        const colors = {
+            'CALL': '#3B82F6',        // Azul - Ligação
+            'EMAIL': '#10B981',        // Verde - E-mail
+            'MEETING': '#8B5CF6',      // Roxo - Reunião
+            'TASK': '#F59E0B',         // Amarelo - Tarefa
+            'NOTE': '#6B7280',         // Cinza - Nota
+            'FOLLOW_UP': '#EF4444'     // Vermelho - Acompanhamento
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getAiResponseTypeColor(value: string): string {
+        const colors = {
+            'TEXT': '#3B82F6',        // Azul - Texto
+            'JSON': '#10B981',         // Verde - JSON
+            'HTML': '#F59E0B',         // Amarelo - HTML
+            'MARKDOWN': '#8B5CF6'      // Roxo - Markdown
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getAutomationTypeColor(value: string): string {
+        const colors = {
+            'EMAIL_SEQUENCE': '#10B981',   // Verde - E-mail
+            'SMS_SEQUENCE': '#3B82F6',     // Azul - SMS
+            'CALL_REMINDER': '#F59E0B',    // Amarelo - Lembrete
+            'FOLLOW_UP': '#EF4444',        // Vermelho - Acompanhamento
+            'WELCOME': '#8B5CF6',          // Roxo - Boas-vindas
+            'NURTURING': '#06B6D4'         // Ciano - Nutrição
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getCalendarProviderColor(value: string): string {
+        const colors = {
+            'GOOGLE': '#4285F4',       // Azul Google
+            'OUTLOOK': '#0078D4',      // Azul Microsoft
+            'APPLE': '#000000',        // Preto Apple
+            'EXCHANGE': '#0078D4'      // Azul Exchange
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getCampaignCategoryColor(value: string): string {
+        const colors = {
+            'EMAIL': '#10B981',        // Verde - E-mail
+            'SMS': '#3B82F6',          // Azul - SMS
+            'SOCIAL_MEDIA': '#8B5CF6', // Roxo - Social
+            'DIRECT_MAIL': '#F59E0B',  // Amarelo - Correio
+            'DIGITAL_ADS': '#EF4444',  // Vermelho - Anúncios
+            'CONTENT': '#06B6D4'       // Ciano - Conteúdo
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getCampaignStatusColor(value: string): string {
+        const colors = {
+            'DRAFT': '#6B7280',        // Cinza - Rascunho
+            'SCHEDULED': '#3B82F6',    // Azul - Agendada
+            'RUNNING': '#10B981',      // Verde - Em execução
+            'PAUSED': '#F59E0B',       // Amarelo - Pausada
+            'COMPLETED': '#4CAF50',    // Verde - Concluída
+            'CANCELLED': '#F44336'     // Vermelho - Cancelada
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getCampaignTypeColor(value: string): string {
+        const colors = {
+            'MARKETING': '#8B5CF6',    // Roxo - Marketing
+            'SALES': '#EF4444',        // Vermelho - Vendas
+            'NURTURING': '#06B6D4',    // Ciano - Nutrição
+            'RETENTION': '#10B981',    // Verde - Retenção
+            'REACTIVATION': '#F59E0B', // Amarelo - Reativação
+            'PROMOTIONAL': '#EC4899'   // Rosa - Promocional
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getClientStatusColor(value: string): string {
+        const colors = {
+            'ACTIVE': '#10B981',       // Verde - Ativo
+            'INACTIVE': '#6B7280',     // Cinza - Inativo
+            'PENDING': '#F59E0B',      // Amarelo - Pendente
+            'BLOCKED': '#F44336'       // Vermelho - Bloqueado
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getClientTypeColor(value: string): string {
+        const colors = {
+            'INDIVIDUAL': '#3B82F6',   // Azul - Pessoa Física
+            'COMPANY': '#10B981',      // Verde - Pessoa Jurídica
+            'GOVERNMENT': '#8B5CF6',   // Roxo - Governo
+            'NON_PROFIT': '#F59E0B'    // Amarelo - Sem fins lucrativos
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getCommunicationChannelColor(value: string): string {
+        const colors = {
+            'EMAIL': '#10B981',        // Verde - E-mail
+            'PHONE': '#3B82F6',        // Azul - Telefone
+            'SMS': '#06B6D4',          // Ciano - SMS
+            'WHATSAPP': '#25D366',     // Verde WhatsApp
+            'FACEBOOK': '#1877F2',     // Azul Facebook
+            'INSTAGRAM': '#E4405F',    // Rosa Instagram
+            'LINKEDIN': '#0A66C2',     // Azul LinkedIn
+            'TWITTER': '#1DA1F2',      // Azul Twitter
+            'TELEGRAM': '#0088CC',     // Azul Telegram
+            'IN_PERSON': '#8B5CF6'     // Roxo - Presencial
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getContactTypeColor(value: string): string {
+        const colors = {
+            'PRIMARY': '#10B981',      // Verde - Principal
+            'SECONDARY': '#3B82F6',    // Azul - Secundário
+            'EMERGENCY': '#F44336',    // Vermelho - Emergência
+            'BILLING': '#F59E0B',      // Amarelo - Cobrança
+            'TECHNICAL': '#8B5CF6',    // Roxo - Técnico
+            'SALES': '#EF4444'         // Vermelho - Vendas
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getContentTypeColor(value: string): string {
+        const colors = {
+            'TEXT': '#6B7280',        // Cinza - Texto
+            'HTML': '#F59E0B',        // Amarelo - HTML
+            'IMAGE': '#8B5CF6',       // Roxo - Imagem
+            'VIDEO': '#EF4444',       // Vermelho - Vídeo
+            'AUDIO': '#10B981',       // Verde - Áudio
+            'DOCUMENT': '#3B82F6',    // Azul - Documento
+            'PDF': '#F44336',         // Vermelho - PDF
+            'SPREADSHEET': '#4CAF50', // Verde - Planilha
+            'PRESENTATION': '#FF9800' // Laranja - Apresentação
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getContractTypeColor(value: string): string {
+        const colors = {
+            'SERVICE': '#10B981',     // Verde - Serviço
+            'PRODUCT': '#3B82F6',     // Azul - Produto
+            'SUBSCRIPTION': '#8B5CF6', // Roxo - Assinatura
+            'MAINTENANCE': '#F59E0B', // Amarelo - Manutenção
+            'SUPPORT': '#06B6D4',     // Ciano - Suporte
+            'LICENSE': '#EF4444'      // Vermelho - Licença
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getConversationStatusColor(value: string): string {
+        const colors = {
+            'OPEN': '#10B981',        // Verde - Aberta
+            'CLOSED': '#6B7280',      // Cinza - Fechada
+            'PENDING': '#F59E0B',     // Amarelo - Pendente
+            'RESOLVED': '#4CAF50',    // Verde - Resolvida
+            'ESCALATED': '#F44336'    // Vermelho - Escalada
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getEmployeeStatusColor(value: string): string {
+        const colors = {
+            'ACTIVE': '#10B981',      // Verde - Ativo
+            'INACTIVE': '#6B7280',    // Cinza - Inativo
+            'ON_LEAVE': '#F59E0B',    // Amarelo - Afastado
+            'TERMINATED': '#F44336',  // Vermelho - Demitido
+            'SUSPENDED': '#EF4444'    // Vermelho - Suspenso
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getEntityTypeColor(value: string): string {
+        const colors = {
+            'USER': '#3B82F6',        // Azul - Usuário
+            'CLIENT': '#10B981',      // Verde - Cliente
+            'LEAD': '#F59E0B',        // Amarelo - Lead
+            'OPPORTUNITY': '#8B5CF6', // Roxo - Oportunidade
+            'CONTACT': '#06B6D4',     // Ciano - Contato
+            'COMPANY': '#EF4444'      // Vermelho - Empresa
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getGenderColor(value: string): string {
+        const colors = {
+            'MALE': '#3B82F6',        // Azul - Masculino
+            'FEMALE': '#EC4899',      // Rosa - Feminino
+            'OTHER': '#8B5CF6'        // Roxo - Outro
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getInteractionStatusColor(value: string): string {
+        const colors = {
+            'PENDING': '#F59E0B',     // Amarelo - Pendente
+            'IN_PROGRESS': '#3B82F6', // Azul - Em andamento
+            'COMPLETED': '#10B981',   // Verde - Concluída
+            'CANCELLED': '#6B7280',   // Cinza - Cancelada
+            'FAILED': '#F44336'       // Vermelho - Falhou
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getInteractionTagColor(value: string): string {
+        const colors = {
+            'HOT': '#F44336',         // Vermelho - Quente
+            'WARM': '#FF9800',        // Laranja - Morno
+            'COLD': '#2196F3',        // Azul - Frio
+            'FOLLOW_UP': '#F59E0B',   // Amarelo - Acompanhamento
+            'URGENT': '#EF4444',      // Vermelho - Urgente
+            'IMPORTANT': '#8B5CF6'    // Roxo - Importante
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getInteractionTypeColor(value: string): string {
+        const colors = {
+            'CALL': '#3B82F6',        // Azul - Ligação
+            'EMAIL': '#10B981',       // Verde - E-mail
+            'SMS': '#06B6D4',         // Ciano - SMS
+            'MEETING': '#8B5CF6',     // Roxo - Reunião
+            'VISIT': '#F59E0B',       // Amarelo - Visita
+            'DEMO': '#EF4444',        // Vermelho - Demonstração
+            'PRESENTATION': '#FF9800' // Laranja - Apresentação
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getLeadStatusColor(value: string): string {
+        const colors = {
+            'HOT': '#F44336',         // Vermelho - Quente
+            'WARM': '#FF9800',        // Laranja - Morno
+            'COLD': '#2196F3',        // Azul - Frio
+            'NEW': '#10B981',         // Verde - Novo
+            'CONTACTED': '#3B82F6',   // Azul - Contatado
+            'QUALIFIED': '#8B5CF6',   // Roxo - Qualificado
+            'PROPOSAL_SENT': '#F59E0B', // Amarelo - Proposta enviada
+            'NEGOTIATION': '#06B6D4', // Ciano - Em negociação
+            'WON': '#4CAF50',         // Verde - Ganho
+            'LOST': '#F44336'         // Vermelho - Perdido
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getMessageDirectionColor(value: string): string {
+        const colors = {
+            'INBOUND': '#10B981',     // Verde - Entrada
+            'OUTBOUND': '#3B82F6'     // Azul - Saída
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getMessagePriorityColor(value: string): string {
+        const colors = {
+            'LOW': '#10B981',         // Verde - Baixa
+            'MEDIUM': '#F59E0B',      // Amarelo - Média
+            'HIGH': '#FF9800',        // Laranja - Alta
+            'URGENT': '#F44336'       // Vermelho - Urgente
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getMessageStatusColor(value: string): string {
+        const colors = {
+            'DRAFT': '#6B7280',       // Cinza - Rascunho
+            'SENT': '#3B82F6',        // Azul - Enviada
+            'DELIVERED': '#10B981',   // Verde - Entregue
+            'READ': '#4CAF50',        // Verde - Lida
+            'FAILED': '#F44336',      // Vermelho - Falhou
+            'BOUNCED': '#EF4444'      // Vermelho - Retornou
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getNotificationTypeColor(value: string): string {
+        const colors = {
+            'EMAIL': '#10B981',       // Verde - E-mail
+            'SMS': '#3B82F6',         // Azul - SMS
+            'PUSH': '#8B5CF6',        // Roxo - Push
+            'IN_APP': '#F59E0B',      // Amarelo - No aplicativo
+            'WEBHOOK': '#06B6D4'      // Ciano - Webhook
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getOpportunityCloseReasonColor(value: string): string {
+        const colors = {
+            'WON': '#4CAF50',         // Verde - Ganho
+            'LOST_PRICE': '#F44336',  // Vermelho - Perdido preço
+            'LOST_COMPETITION': '#EF4444', // Vermelho - Perdido concorrência
+            'LOST_NO_DECISION': '#F59E0B', // Amarelo - Perdido sem decisão
+            'LOST_OTHER': '#6B7280',  // Cinza - Perdido outro
+            'CANCELLED': '#9E9E9E'    // Cinza - Cancelado
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getOpportunityStatusColor(value: string): string {
+        const colors = {
+            'NEW': '#10B981',         // Verde - Novo
+            'QUALIFIED': '#8B5CF6',   // Roxo - Qualificado
+            'PROPOSAL': '#F59E0B',    // Amarelo - Proposta
+            'NEGOTIATION': '#06B6D4', // Ciano - Negociação
+            'CLOSED_WON': '#4CAF50',  // Verde - Fechado ganho
+            'CLOSED_LOST': '#F44336'  // Vermelho - Fechado perdido
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getPolicesColor(value: string): string {
+        const colors = {
+            'ADMIN': '#F44336',       // Vermelho - Administrador
+            'USER': '#3B82F6',        // Azul - Usuário
+            'MANAGER': '#8B5CF6',     // Roxo - Gerente
+            'VIEWER': '#6B7280',      // Cinza - Visualizador
+            'EDITOR': '#10B981'       // Verde - Editor
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getPriorityColor(value: string): string {
+        const colors = {
+            'LOW': '#10B981',         // Verde - Baixa
+            'MEDIUM': '#F59E0B',      // Amarelo - Média
+            'HIGH': '#FF9800',        // Laranja - Alta
+            'URGENT': '#F44336'       // Vermelho - Urgente
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getRecipientStatusColor(value: string): string {
+        const colors = {
+            'ACTIVE': '#10B981',      // Verde - Ativo
+            'INACTIVE': '#6B7280',    // Cinza - Inativo
+            'UNSUBSCRIBED': '#F59E0B', // Amarelo - Descadastrado
+            'BOUNCED': '#F44336',     // Vermelho - Retornou
+            'COMPLAINED': '#EF4444'   // Vermelho - Reclamou
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getRecipientTypeColor(value: string): string {
+        const colors = {
+            'LEAD': '#F59E0B',        // Amarelo - Lead
+            'CLIENT': '#10B981',      // Verde - Cliente
+            'PROSPECT': '#3B82F6',    // Azul - Prospect
+            'SUBSCRIBER': '#8B5CF6',  // Roxo - Assinante
+            'PARTNER': '#06B6D4'      // Ciano - Parceiro
+        };
+        return colors[value] || '#6B7280';
+    }
+
+    private getRulesColor(value: string): string {
+        const colors = {
+            'CREATE': '#10B981',      // Verde - Criar
+            'READ': '#3B82F6',        // Azul - Ler
+            'UPDATE': '#F59E0B',      // Amarelo - Atualizar
+            'DELETE': '#F44336',      // Vermelho - Excluir
+            'EXECUTE': '#8B5CF6'      // Roxo - Executar
+        };
+        return colors[value] || '#6B7280';
     }
 }

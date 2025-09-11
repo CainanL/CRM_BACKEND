@@ -44,27 +44,28 @@ export class PipelineStageController {
         return await this.updatePipelineStageService.execute(body, req);
     }
 
-    @Get("/:id")
-    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_VIEW])
-    @UseGuards(AuthGuard, PoliciesRolesGuard)
-    async getPipelineStageById(@Param() params: GetByIdBase, @Request() req) {
-        return await this.getPipelineStageByIdService.execute(params, req);
-    }
-
-    @Get("/pipeline/:pipelineId")
+    
+    @Get("/pipeline")
     @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_LIST])
     @UseGuards(AuthGuard, PoliciesRolesGuard)
     async getStagesByPipeline( @Query() query: GetStagesByPipelineRequest, @Request() req) {
         return await this.getStagesByPipelineService.execute(query, req);
     }
-
+    
     @Put("/reorder")
     @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_EDIT])
     @UseGuards(AuthGuard, PoliciesRolesGuard)
     async reorderPipelineStages(@Body() body: ReorderPipelineStagesRequest, @Request() req) {
         return await this.reorderPipelineStagesService.execute(body, req);
     }
-
+    
+    @Get("/:id")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_VIEW])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async getPipelineStageById(@Param() params: GetByIdBase, @Request() req) {
+        return await this.getPipelineStageByIdService.execute(params, req);
+    }
+    
     @Delete("/:id")
     @PolicyRole([Policies.ADMIN], [Rules.CAN_DELETE])
     @UseGuards(AuthGuard, PoliciesRolesGuard)

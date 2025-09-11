@@ -50,7 +50,14 @@ export class CreateOpportunityService extends HandlerBase<CreateOpportunityReque
                 throw new BaseException("Estágio não encontrado ou não pertence ao funil", 404);
             }
 
-            const assignedTo = this.user?.id ?? null;
+            const employee = await tx.employee.findFirst({
+                where: { userId: this.user.id }
+            });
+
+            if (!employee) {
+                throw new BaseException("Funcionário não encontrado", 404);
+            }
+            const assignedTo = employee.id;
 
             // Usar probabilidade padrão do estágio se não fornecida
             const probability = request.probability ?? stage.defaultProbability;

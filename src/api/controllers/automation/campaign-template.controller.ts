@@ -48,11 +48,11 @@ export class CampaignTemplateController {
         return await this.getTemplateByIdService.execute(param, req);
     }
 
-    @Put("/:id")
+    @Put()
     @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_EDIT])
     @UseGuards(AuthGuard, PoliciesRolesGuard)
-    async updateTemplate(@Param() param: UpdateTemplateRequest, @Body() body: Partial<UpdateTemplateRequest>, @Request() req) {
-        return await this.updateTemplateService.execute(param, req);
+    async updateTemplate(@Body() request: UpdateTemplateRequest, @Body() body: Partial<UpdateTemplateRequest>, @Request() req) {
+        return await this.updateTemplateService.execute(request, req);
     }
 
     @Delete("/:id")

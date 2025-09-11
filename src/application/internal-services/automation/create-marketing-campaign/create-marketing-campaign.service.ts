@@ -11,8 +11,8 @@ export class CreateMarketingCampaignService extends HandlerBase<CreateMarketingC
     protected async executeCore(request: CreateMarketingCampaignRequest, data?: any): Promise<MarketingCampaignVM> {
         return await this.transaction<MarketingCampaignVM>(async (tx) => {
             // Validar se o funcionário existe
-            const employee = await tx.employee.findUnique({
-                where: { id: this.user.id }
+            const employee = await tx.employee.findFirst({
+                where: { userId: this.user.id }
             });
 
             if (!employee) {

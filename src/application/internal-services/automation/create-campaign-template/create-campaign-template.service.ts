@@ -9,8 +9,8 @@ export class CreateCampaignTemplateService extends HandlerBase<CreateCampaignTem
     protected async executeCore(request: CreateCampaignTemplateRequest, data?: any): Promise<CampaignTemplateVM> {
         return await this.transaction<CampaignTemplateVM>(async (tx) => {
             // Validar se o funcionário existe
-            const employee = await tx.employee.findUnique({
-                where: { id: this.user.id }
+            const employee = await tx.employee.findFirst({
+                where: { userId: this.user.id }
             });
 
             if (!employee) {
@@ -50,7 +50,7 @@ export class CreateCampaignTemplateService extends HandlerBase<CreateCampaignTem
                     subject: request.subject,
                     content: request.content,
                     variables: variables,
-                    createdByEmployeeId: this.user.id,
+                    createdByEmployeeId: employee.id,
                     isActive: true
                 },
                 include: {

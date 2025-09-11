@@ -40,6 +40,14 @@ export class PipelineController {
         return await this.updatePipelineService.execute(body, req);
     }
 
+    @Get("/group")
+    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_LIST])
+    @UseGuards(AuthGuard, PoliciesRolesGuard)
+    async getPipelinesByGroup(@Query() query: GetPipelinesByGroupRequest, @Request() req) {
+
+        return await this.getPipelinesByGroupService.execute(query, req);
+    }
+
     @Get("/:id")
     @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_VIEW])
     @UseGuards(AuthGuard, PoliciesRolesGuard)
@@ -47,13 +55,6 @@ export class PipelineController {
         return await this.getPipelineByIdService.execute(params, req);
     }
 
-    @Get("/group/:groupId")
-    @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_LIST])
-    @UseGuards(AuthGuard, PoliciesRolesGuard)
-    async getPipelinesByGroup(@Query() query: GetPipelinesByGroupRequest, @Request() req) {
-
-        return await this.getPipelinesByGroupService.execute(query, req);
-    }
 
     @Delete("/:id")
     @PolicyRole([Policies.ADMIN], [Rules.CAN_DELETE])
