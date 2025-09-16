@@ -10,7 +10,7 @@ export class QueryLeadsService extends HandlerBase<QueryLeadsRequest, PaginatedR
         this.logger.debug("request");
         const res = await this.context.solutionCapturedLead.findMany({
             where: {
-                solutionId: request.solutionId
+                solutionId: request?.solutionId
             },
             include: {
                 fielValues: {include: {settings: true  }}

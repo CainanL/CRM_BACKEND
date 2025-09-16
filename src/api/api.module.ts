@@ -24,6 +24,7 @@ import { MarketingCampaignController } from "./controllers/automation/marketing-
 import { CampaignTemplateController } from "./controllers/automation/campaign-template.controller";
 import { MigrationController } from "./controllers/master/migration.controller";
 import { EnumsController } from "./controllers/master/enums.controller";
+import { EnumController } from "./controllers/master/enum.controller";
 
 @Module({
     imports: [
@@ -56,6 +57,7 @@ import { EnumsController } from "./controllers/master/enums.controller";
     CampaignTemplateController,
     MigrationController,
     EnumsController,
+    EnumController,
   ]
 })
 export class ApiModule { }
