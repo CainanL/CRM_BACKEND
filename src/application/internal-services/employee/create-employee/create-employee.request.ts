@@ -100,7 +100,7 @@ export class CreateEmployeeRequest {
 
     @ApiProperty({ example: "EMP001", description: "Registro interno" })
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     internalRegistration?: string;
 
     @ApiProperty({ example: "2023-01-15", description: "Data de admissão" })
@@ -128,8 +128,8 @@ export class CreateEmployeeRequest {
     @IsNotEmpty()
     status: EmployeeStatus;
 
-    @ApiPropertyOptional({ example: "cme6jxl9b0000fpmkhy3j28og", description: "ID do usuário para autenticação" })
-    @IsUUID()
-    @IsOptional()
-    userId?: string;
+    // @ApiPropertyOptional({ example: "cme6jxl9b0000fpmkhy3j28og", description: "ID do usuário para autenticação" })
+    // @IsUUID()
+    // @IsOptional()
+    // userId?: string;
 }

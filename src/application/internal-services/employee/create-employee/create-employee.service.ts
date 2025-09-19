@@ -32,7 +32,7 @@ export class CreateEmployeeService extends HandlerBase<CreateEmployeeRequest, Em
                     salary: request.salary,
                     comission: request.comission,
                     status: request.status,
-                    userId: request.userId,
+                    // userId: request.userId,
                     isActive: true
                 },
                 include: { address: true }

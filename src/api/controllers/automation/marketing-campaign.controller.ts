@@ -46,15 +46,11 @@ export class MarketingCampaignController {
         return await this.createMarketingCampaignService.execute(body, req);
     }
 
-    @Post("/:campaignId/execute")
+    @Post("/execute")
     @PolicyRole([Policies.ADMIN, Policies.USER], [Rules.CAN_EDIT])
     @UseGuards(AuthGuard, PoliciesRolesGuard)
-    async executeCampaign(@Param("campaignId") campaignId: string, @Body() body: Partial<ExecuteCampaignRequest>, @Request() req) {
-        const request: ExecuteCampaignRequest = {
-            campaignId,
-            executeImmediately: body.executeImmediately ?? true,
-            scheduledAt: body.scheduledAt
-        };
+    async executeCampaign(@Body()request: ExecuteCampaignRequest, @Request() req) {
+        
         return await this.executeCampaignService.execute(request, req);
     }
 
